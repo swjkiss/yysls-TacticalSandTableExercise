@@ -1,0 +1,1995 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>百业战战术沙盘 · 产品需求文档 v0.1</title>
+<style>
+:root{
+  --paper:#F3EEE3; --paper-2:#FBF7EE; --paper-3:#F8F3E9;
+  --ink:#1F2420; --ink-2:#596157; --ink-3:#8A8F84;
+  --line:#D8D0BF; --line-strong:#BDB3A0;
+  --cinnabar:#B23A2E; --cinnabar-soft:#F3DEDA;
+  --teal:#2F6F6A; --teal-soft:#DCEAE6;
+  --gold:#B08A45; --gold-soft:#F1E6CE;
+  --green:#3F7D58; --amber:#B7791F; --gray:#7C8178;
+  --serif:"Noto Serif SC","Source Han Serif SC","Songti SC",SimSun,serif;
+  --sans:"Noto Sans SC","Source Han Sans SC","PingFang SC","Microsoft YaHei",sans-serif;
+  --mono:"JetBrains Mono",Consolas,"Courier New",monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.75}
+a{color:var(--teal);text-decoration:none}
+a:hover{text-decoration:underline}
+.layout{display:grid;grid-template-columns:252px minmax(0,1fr);min-height:100vh}
+.toc{position:sticky;top:0;height:100vh;overflow:auto;background:var(--ink);color:#EFE9DB;padding:28px 18px}
+.brand{display:flex;gap:10px;align-items:center;margin-bottom:8px}
+.brand-mark{width:38px;height:38px;border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold);font-family:var(--serif);font-size:18px;flex:none}
+.brand-name{font-family:var(--serif);font-size:16px;line-height:1.25;letter-spacing:.04em}
+.brand-sub{font-size:10px;color:#A9A293;letter-spacing:.08em}
+.toc nav{margin-top:22px;display:flex;flex-direction:column;gap:1px}
+.toc nav a{display:flex;gap:9px;padding:7px 8px;border-radius:6px;color:#CFC8B8;font-size:12.5px;line-height:1.4}
+.toc nav a:hover{background:rgba(255,255,255,.06);color:#fff;text-decoration:none}
+.toc .num{color:var(--gold);font-family:var(--mono);font-size:10px;padding-top:2px;flex:none}
+.toc-meta{margin-top:22px;padding-top:16px;border-top:1px solid rgba(255,255,255,.12);font-size:11px;color:#A9A293;line-height:1.7}
+.main{min-width:0}
+.wrap{max-width:1180px;margin:0 auto;padding:48px 56px 96px}
+.doc-header{border-bottom:1px solid var(--line);padding-bottom:28px;margin-bottom:8px}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--cinnabar)}
+h1{font-family:var(--serif);font-size:38px;line-height:1.25;margin:12px 0 10px;letter-spacing:.02em}
+.subtitle{font-size:16px;color:var(--ink-2);max-width:800px;margin:0}
+.meta-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:24px}
+.meta-item{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:9px 12px}
+.meta-item .k{font-size:11px;color:var(--ink-3)}
+.meta-item .v{font-size:13px;font-weight:600;line-height:1.5}
+section{margin:44px 0 0;scroll-margin-top:24px}
+h2{font-family:var(--serif);font-size:24px;margin:0 0 6px;display:flex;align-items:baseline;gap:10px;letter-spacing:.02em}
+h2 .sec-num{font-family:var(--mono);font-size:12px;color:var(--cinnabar);letter-spacing:.08em;flex:none}
+.lead{color:var(--ink-2);margin:6px 0 18px}
+h3{font-size:17px;margin:28px 0 8px}
+h4{font-size:14px;margin:18px 0 6px}
+p{margin:8px 0}
+ul,ol{margin:8px 0 8px 22px;padding:0}
+li{margin:4px 0}
+table{width:100%;border-collapse:collapse;margin:12px 0 18px;font-size:13px;background:var(--paper-2)}
+th,td{border:1px solid var(--line);padding:8px 10px;text-align:left;vertical-align:top}
+th{background:#EDE6D8;font-weight:600;color:var(--ink)}
+tbody tr:nth-child(even) td{background:var(--paper-3)}
+code{font-family:var(--mono);font-size:12px;background:#EDE7DA;border:1px solid #DDD4C2;border-radius:4px;padding:1px 4px}
+pre{background:#232821;color:#EDE7DA;border-radius:8px;padding:16px;overflow:auto;font-family:var(--mono);font-size:12px;line-height:1.65}
+pre code{background:none;border:0;padding:0;color:inherit}
+.note,.warn,.assump{border-left:3px solid var(--teal);background:var(--teal-soft);padding:10px 14px;margin:14px 0;border-radius:0 8px 8px 0;font-size:13px}
+.warn{border-color:var(--amber);background:#F8EEDB}
+.assump{border-color:var(--gold);background:var(--gold-soft)}
+.badge{display:inline-block;font-size:11px;line-height:1;padding:4px 7px;border-radius:999px;border:1px solid var(--line-strong);color:var(--ink-2);background:var(--paper-2);white-space:nowrap}
+.badge.p0{color:#7A241C;background:var(--cinnabar-soft);border-color:#E2B8B1}
+.badge.p1{color:#245B57;background:var(--teal-soft);border-color:#B9D6D1}
+.badge.p2{color:#6B5A2E;background:var(--gold-soft);border-color:#DCC796}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.card{background:var(--paper-2);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.card h4{margin-top:0}
+.swatches{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.swatch{width:98px;font-size:11px;color:var(--ink-2)}
+.swatch i{display:block;height:32px;border-radius:6px;border:1px solid rgba(0,0,0,.08);margin-bottom:4px}
+.flow{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:12px 0 18px}
+.flow .step{background:var(--paper-2);border:1px solid var(--line);border-radius:8px;padding:8px 12px;font-size:13px}
+.flow .arrow{color:var(--cinnabar);font-size:16px;font-weight:600}
+.tbc{color:var(--cinnabar);font-weight:600}
+.refs li{margin:10px 0}
+.footer{margin-top:64px;padding-top:20px;border-top:1px solid var(--line);font-size:12px;color:var(--ink-3)}
+.small{font-size:12px;color:var(--ink-3)}
+.wire{background:#E7E0D1;border:1px solid var(--line-strong);border-radius:12px;padding:10px;margin:16px 0 8px}
+.wire-caption{font-size:12px;color:var(--ink-3);margin:6px 0 22px}
+.wf{background:#F7F2E7;border:1px solid #C9BFA9;border-radius:8px;overflow:hidden;box-shadow:0 10px 24px rgba(31,36,32,.08)}
+.wf-bar{height:30px;display:flex;align-items:center;gap:6px;padding:0 10px;background:#E9E1D2;border-bottom:1px solid #D4C9B5}
+.wf-dot{width:7px;height:7px;border-radius:50%;background:#B9AF9E}
+.wf-url{margin-left:8px;font-size:10px;color:#7A7468;background:#F7F2E7;border:1px solid #D4C9B5;border-radius:999px;padding:2px 10px}
+.wf-top{height:44px;display:flex;align-items:center;gap:10px;padding:0 14px;border-bottom:1px solid #D4C9B5;background:#FBF7EE}
+.wf-logo{font-family:var(--serif);font-weight:700;font-size:13px;white-space:nowrap}
+.wf-search{flex:1;height:24px;border:1px solid #D4C9B5;border-radius:999px;background:#F3EEE3;font-size:10px;color:#8A8F84;display:flex;align-items:center;padding:0 10px}
+.wf-btn{font-size:10px;border:1px solid #C9BFA9;border-radius:6px;padding:4px 8px;background:#F3EEE3;color:#4E554C;white-space:nowrap}
+.wf-btn.primary{background:#2F6F6A;border-color:#2F6F6A;color:#fff}
+.wf-library{display:grid;grid-template-columns:150px 1fr;min-height:360px}
+.wf-cats{border-right:1px solid #D4C9B5;padding:12px 10px;background:#F4EEE1}
+.wf-cats .cat-title{font-size:9px;color:#8A8F84;letter-spacing:.08em;margin:0 0 6px;padding:0 7px}
+.wf-cats .item{font-size:10px;padding:5px 7px;border-radius:5px;color:#5E665F;margin-bottom:3px;display:flex;justify-content:space-between}
+.wf-cats .item.active{background:#DCEAE6;color:#245B57;font-weight:600}
+.wf-grid{padding:14px;display:grid;grid-template-columns:repeat(3,1fr);gap:10px;align-content:start}
+.wf-card{border:1px solid #D4C9B5;border-radius:7px;background:#FBF7EE;overflow:hidden}
+.wf-thumb{height:62px;position:relative;background:#EFE7D6;border-bottom:1px solid #D4C9B5}
+.wf-thumb.one{background:linear-gradient(90deg,transparent 30%,#D8D0BF 30%,#D8D0BF 31.5%,transparent 31.5%),linear-gradient(90deg,transparent 49%,#D8D0BF 49%,#D8D0BF 50.5%,transparent 50.5%),linear-gradient(90deg,transparent 68%,#D8D0BF 68%,#D8D0BF 69.5%,transparent 69.5%),#EFE7D6}
+.wf-thumb .dot{position:absolute;width:6px;height:6px;border-radius:50%;background:#3F7D58;border:1px solid #2F6F6A}
+.wf-thumb .dot.red{background:#C05A4E;border-color:#B23A2E}
+.wf-thumb .dot.gold{background:#C8A45C;border-color:#B08A45}
+.wf-card-body{padding:7px 8px}
+.wf-card-title{font-size:10px;font-weight:600;line-height:1.4;margin-bottom:3px}
+.wf-card-meta{font-size:8.5px;color:#8A8F84;display:flex;justify-content:space-between;gap:4px}
+.wf-editor{display:flex;flex-direction:column;min-height:430px}
+.wf-editor-top{height:40px;display:flex;align-items:center;gap:8px;padding:0 12px;border-bottom:1px solid #D4C9B5;background:#FBF7EE}
+.wf-title{font-size:11px;font-weight:600}
+.wf-save{font-size:8.5px;color:#3F7D58;background:#DCEAE6;border:1px solid #B9D6D1;border-radius:999px;padding:2px 6px}
+.wf-editor-main{display:grid;grid-template-columns:150px 1fr 190px;flex:1;min-height:340px}
+.wf-panel{border-right:1px solid #D4C9B5;background:#F4EEE1;padding:10px}
+.wf-panel.right{border-right:none;border-left:1px solid #D4C9B5}
+.wf-panel-title{font-size:9px;color:#8A8F84;letter-spacing:.08em;margin:0 0 6px}
+.wf-field-row{font-size:9px;color:#5E665F;display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed #DDD4C2}
+.wf-layer{font-size:9.5px;display:flex;align-items:center;gap:6px;padding:4px 0;color:#4E554C}
+.wf-check{width:9px;height:9px;border-radius:2px;border:1px solid #9C9382;background:#FBF7EE;flex:none}
+.wf-check.on{background:#2F6F6A;border-color:#2F6F6A}
+.wf-canvas{position:relative;background:#EFE7D6;overflow:hidden;min-height:340px}
+.wf-tools{position:absolute;top:8px;left:50%;transform:translateX(-50%);display:flex;gap:3px;background:#FBF7EE;border:1px solid #C9BFA9;border-radius:6px;padding:4px;z-index:2;box-shadow:0 2px 6px rgba(31,36,32,.08)}
+.wf-tool{font-size:8.5px;padding:3px 5px;border-radius:4px;color:#4E554C;white-space:nowrap}
+.wf-tool.active{background:#2F6F6A;color:#fff}
+.wf-zoom{position:absolute;right:8px;bottom:8px;display:flex;gap:3px;background:#FBF7EE;border:1px solid #C9BFA9;border-radius:5px;padding:3px;font-size:8.5px;color:#4E554C;z-index:2}
+.wf-zoom span{padding:0 4px}
+.wf-status{height:22px;border-top:1px solid #D4C9B5;background:#FBF7EE;font-size:8.5px;color:#7A7468;display:flex;align-items:center;padding:0 10px;justify-content:space-between}
+.wf-tabs{display:flex;gap:3px;margin-bottom:8px}
+.wf-tab{font-size:8.5px;padding:3px 5px;border-radius:4px;color:#7A7468;background:#EAE3D5}
+.wf-tab.active{background:#2F6F6A;color:#fff}
+.wf-roster-row{display:flex;align-items:center;gap:5px;padding:4px 0;border-bottom:1px dashed #DDD4C2;font-size:8.5px;color:#4E554C}
+.wf-roster-dot{width:12px;height:12px;border-radius:50%;background:#3F7D58;border:1.5px solid #2F6F6A;flex:none;color:#fff;font-size:6.5px;display:grid;place-items:center}
+.wf-roster-dot.red{background:#C05A4E;border-color:#B23A2E}
+.wf-roster-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.wf-roster-tag{font-size:7px;color:#7A7468;background:#EAE3D5;border-radius:999px;padding:1px 4px}
+.wf-prop{margin-top:8px;border-top:1px solid #D4C9B5;padding-top:8px}
+.wf-prop-title{font-size:9px;font-weight:600;margin-bottom:4px}
+.wf-prop-row{font-size:8.5px;color:#7A7468;display:flex;justify-content:space-between;padding:2px 0}
+.wf-modal{max-width:560px;margin:0 auto;background:#FBF7EE;border:1px solid #C9BFA9;border-radius:8px;overflow:hidden;box-shadow:0 10px 24px rgba(31,36,32,.12)}
+.wf-modal-head{padding:10px 14px;border-bottom:1px solid #D4C9B5;font-size:12px;font-weight:600;display:flex;justify-content:space-between}
+.wf-modal-body{padding:14px}
+.school-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.school{border:1px solid #D4C9B5;border-radius:6px;padding:7px 4px;text-align:center;font-size:10px;background:#F4EEE1;line-height:1.4}
+.school b{display:block;font-size:13px;font-weight:700;color:#3E463E}
+.school small{font-size:7.5px;color:#8A8F84;display:block}
+.school.active{border-color:#2F6F6A;background:#DCEAE6;color:#245B57}
+.school.active b{color:#245B57}
+.wf-form-row{display:flex;gap:8px;align-items:center;margin-top:8px;font-size:10px;color:#4E554C}
+.wf-input{flex:1;height:22px;border:1px solid #D4C9B5;border-radius:4px;background:#F8F3E9;font-size:9px;color:#8A8F84;display:flex;align-items:center;padding:0 6px}
+.wf-preview{display:flex;gap:14px;align-items:center;margin-top:10px;padding:9px 10px;background:#F3EEE3;border:1px solid #DDD4C2;border-radius:6px}
+.token{display:inline-flex;flex-direction:column;align-items:center;gap:3px;font-family:var(--sans)}
+.token .dot{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:700;color:#fff;border:2px solid #2F6F6A;background:#3F7D58}
+.token .name{font-size:8.5px;background:rgba(251,247,238,.95);border:1px solid #D4C9B5;border-radius:999px;padding:1px 4px;white-space:nowrap;color:#3E463E}
+.token.enemy .dot{border-color:#B23A2E;background:#C05A4E}
+.token.neutral .dot{border-color:#7C8178;background:#9A9F96}
+.token.selected .dot{box-shadow:0 0 0 3px rgba(176,138,69,.35)}
+.marker{display:inline-flex;flex-direction:column;align-items:center;gap:2px}
+.marker .pin{width:24px;height:24px;border-radius:50% 50% 50% 4px;transform:rotate(-45deg);display:grid;place-items:center;background:#B23A2E;border:1px solid rgba(0,0,0,.12);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.marker .pin span{transform:rotate(45deg);color:#fff;font-size:8px;font-weight:700}
+.marker .label{font-size:8px;background:rgba(251,247,238,.95);border:1px solid #D4C9B5;border-radius:999px;padding:1px 4px;white-space:nowrap;color:#3E463E}
+.marker.teal .pin{background:#2F6F6A}
+.marker.gold .pin{background:#B08A45}
+.marker.gray .pin{background:#7C8178}
+.marker-legend{display:flex;flex-wrap:wrap;gap:16px;margin:12px 0 18px}
+.map-svg{display:block;width:100%;height:100%}
+.map-svg text{font-family:var(--sans)}
+.map-figure{background:#EFE7D6;border:1px solid var(--line-strong);border-radius:12px;padding:12px;margin:16px 0 6px;overflow:hidden}
+.map-figure svg{display:block;width:100%;height:auto}
+.map-figure text{font-family:var(--sans)}
+.map-legend{display:flex;flex-wrap:wrap;gap:14px;margin:10px 2px 0;font-size:11px;color:var(--ink-2)}
+.map-legend span{display:inline-flex;align-items:center;gap:5px}
+.map-legend i{width:10px;height:10px;border-radius:3px;display:inline-block;border:1px solid rgba(0,0,0,.15);flex:none}
+.map-note{font-size:12px;color:var(--ink-3);margin:8px 0 20px;line-height:1.7}
+.wf-viewchip{font-size:8.5px;color:#6B5A2E;background:#F1E6CE;border:1px solid #DCC796;border-radius:999px;padding:2px 7px;white-space:nowrap}
+.annotations{font-size:12.5px;color:var(--ink-2);margin:10px 0 26px}
+.annotations li{margin:5px 0}
+@media (max-width:1100px){
+  .layout{grid-template-columns:1fr}
+  .toc{position:relative;height:auto;display:none}
+  .wrap{padding:32px 24px 72px}
+  .meta-grid{grid-template-columns:repeat(2,1fr)}
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+@media print{
+  .toc{display:none}
+  .layout{display:block}
+  .wrap{max-width:none;padding:0}
+  .wf{break-inside:avoid}
+  section{break-inside:avoid-page}
+}
+</style>
+</head>
+<body>
+<div class="layout">
+<aside class="toc">
+  <div class="brand">
+    <div class="brand-mark">业</div>
+    <div>
+      <div class="brand-name">百业沙盘</div>
+      <div class="brand-sub">PRODUCT REQUIREMENTS</div>
+    </div>
+  </div>
+  <nav>
+    <a href="#s0"><span class="num">00</span><span>文档说明</span></a>
+    <a href="#s1"><span class="num">01</span><span>背景与目标</span></a>
+    <a href="#s2"><span class="num">02</span><span>玩法与流派研究</span></a>
+    <a href="#s3"><span class="num">03</span><span>用户与核心场景</span></a>
+    <a href="#s4"><span class="num">04</span><span>产品范围</span></a>
+    <a href="#s5"><span class="num">05</span><span>信息架构</span></a>
+    <a href="#s6"><span class="num">06</span><span>UI 设计</span></a>
+    <a href="#s7"><span class="num">07</span><span>功能需求</span></a>
+    <a href="#s8"><span class="num">08</span><span>共享规则</span></a>
+    <a href="#s9"><span class="num">09</span><span>数据契约</span></a>
+    <a href="#s10"><span class="num">10</span><span>非功能需求</span></a>
+    <a href="#s11"><span class="num">11</span><span>核心流程</span></a>
+    <a href="#s12"><span class="num">12</span><span>待确认问题</span></a>
+    <a href="#s13"><span class="num">13</span><span>参考资料</span></a>
+    <a href="#s14"><span class="num">14</span><span>附录</span></a>
+  </nav>
+  <div class="toc-meta">
+    v0.1 评审稿<br>
+    2026-11-23<br>
+    仅设计，不进入开发
+  </div>
+</aside>
+<main class="main">
+<div class="wrap">
+<header class="doc-header">
+  <div class="eyebrow">Product Requirements Document / Review Draft</div>
+  <h1>百业战战术沙盘</h1>
+  <p class="subtitle">面向《燕云十六声》百业战 30v30 团队的网页战术模板工具。以一张示意战场为画布，完成路线、资源点与流派人物标点，支持本地保存与模板导入导出。本文档只定义产品与界面，不包含可运行的产品原型。</p>
+  <div class="meta-grid">
+    <div class="meta-item"><div class="k">文档版本</div><div class="v">v0.1 评审稿</div></div>
+    <div class="meta-item"><div class="k">更新日期</div><div class="v">2026-11-23</div></div>
+    <div class="meta-item"><div class="k">产品形态</div><div class="v">纯前端网页 · 桌面优先</div></div>
+    <div class="meta-item"><div class="k">当前阶段</div><div class="v">需求与 UI 设计，不开发</div></div>
+  </div>
+</header>
+<section id="s0">
+  <h2><span class="sec-num">00</span>文档说明</h2>
+  <p class="lead">本文档定义一款面向《燕云十六声》百业战玩家的网页战术模板工具。目标是把“赛前分工、路线安排、资源点争夺、人物站位”从聊天记录和手绘截图，变成一张可保存、可复用、可导入导出的战术图。</p>
+
+  <h3>0.1 文档目的与读者</h3>
+  <table>
+    <thead><tr><th style="width:22%">项目</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>目的</td><td>在进入开发前，统一产品范围、页面结构、交互规则、数据边界与 UI 方向；本文档不包含可运行原型。</td></tr>
+      <tr><td>读者</td><td>产品、UI/UX、前端开发、战队社长/指挥、参与评审的队员。</td></tr>
+      <tr><td>决策级别</td><td>P0 为 MVP 必须完成；P1 为下一阶段；P2 为暂不排期。标注 <span class="tbc">[TBD]</span> 的内容需评审确认。</td></tr>
+      <tr><td>交付物</td><td>本 PRD（含线框与规则）。开发阶段另出技术方案、接口/存储设计与测试用例。</td></tr>
+    </tbody>
+  </table>
+
+  <h3>0.2 事实边界与标注约定</h3>
+  <div class="warn">
+    <strong>事实边界：</strong>百业战机制来自公开攻略与官方更新公告（检索截至 2026-11-23），游戏版本更新可能导致细节变化；流派组合为社区与官方公开资料的常见搭配，工具内预设允许用户修改。本文档中的地图是<strong>结构示意</strong>，不是官方地图的精确复刻；如需精确底图，需另行取得可用素材与授权。
+  </div>
+  <table>
+    <thead><tr><th style="width:18%">标注</th><th>含义</th><th>处理方式</th></tr></thead>
+    <tbody>
+      <tr><td>已确认事实</td><td>有官方公告或公开攻略支持</td><td>可直接作为需求依据，附来源编号</td></tr>
+      <tr><td>产品判断</td><td>为完成核心任务而做出的设计决策</td><td>在文中说明理由与取舍</td></tr>
+      <tr><td><span class="tbc">[Assumption, TBD]</span></td><td>当前按此假设推进，但需要评审确认</td><td>不阻塞设计，进入待确认清单</td></tr>
+      <tr><td><span class="tbc">[TBD]</span></td><td>缺失且会影响范围/规则的信息</td><td>评审时确认，确认前不写成既定事实</td></tr>
+    </tbody>
+  </table>
+
+  <h3>0.3 术语表</h3>
+  <table>
+    <thead><tr><th style="width:18%">术语</th><th>本文定义</th></tr></thead>
+    <tbody>
+      <tr><td>百业战</td><td>《燕云十六声》中以“百业”为单位的 30v30 团队竞技玩法；围绕人墙、大鹅、发财树与中立资源展开。<a href="#ref1">[1]</a><a href="#ref3">[3]</a></td></tr>
+      <tr><td>人墙</td><td>攻略常称“防御塔”。每方三座；摧毁任意一座即可对敌方大鹅造成伤害，摧毁三座后大鹅被大幅削弱。<a href="#ref1">[1]</a><a href="#ref2">[2]</a></td></tr>
+      <tr><td>大鹅（鹅）</td><td>双方基地内的关键单位；击杀敌方大鹅后，才能搬运敌方发财树。<a href="#ref1">[1]</a><a href="#ref2">[2]</a></td></tr>
+      <tr><td>发财树（树）</td><td>击杀敌方大鹅后出现；将其搬回并穿过己方大门即获胜。<a href="#ref1">[1]</a><a href="#ref2">[2]</a></td></tr>
+      <tr><td>逗币（战场货币）</td><td>通过击杀玩家、野怪、中立首领获得；仅指挥可消耗，用于施放全队增益、搬树加速、打鹅增伤、快速复活、攻防指令等。<a href="#ref1">[1]</a><a href="#ref4">[4]</a></td></tr>
+      <tr><td>张豹 / 朱邪骨勒</td><td>中立野区首领。攻略常把后者简称为“朱骨”；击杀可获大量逗币，朱邪骨勒额外提供团队增伤。<a href="#ref1">[1]</a><a href="#ref4">[4]</a></td></tr>
+      <tr><td>玄元教据点</td><td>上、下路据点，战斗开始 3 分钟后刷新；占领后可在据点复活，占领后 1 分钟内不可变更归属。<a href="#ref4">[4]</a></td></tr>
+      <tr><td>中场演出</td><td>攻略常称“中场表演”；由社主指定人选参与，胜负可影响敌方人墙或大鹅血量。<a href="#ref1">[1]</a><a href="#ref4">[4]</a></td></tr>
+      <tr><td>流派</td><td>《燕云十六声》中“武器 + 武学循环 + 团队定位”的组合，不是不可更改的职业。例：牵丝·翊（扇 + 舞绫鼓）、牵丝·霖（治疗/辅助）、破竹·风（双刀 + 绳镖）。<a href="#ref5">[5]</a><a href="#ref7">[7]</a></td></tr>
+      <tr><td>战术模板</td><td>一张百业战示意地图 + 一组标点、人物、路线、文字与备注的完整方案，是导入导出的最小单位。</td></tr>
+      <tr><td>人物标记</td><td>代表一名玩家或一个流派占位的可拖动标记，可命名为“翊1号”“双剑1号”等。</td></tr>
+      <tr><td>标点</td><td>地图上的图标化标注，如集合、进攻、防守、人墙、大鹅、发财树、首领、据点等。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s1">
+  <h2><span class="sec-num">01</span>背景与目标</h2>
+  <p class="lead">百业战是 30 人规模的团队玩法，胜负依赖赛前分工与临场调度。没有统一战术图时，信息会散落在截图、语音和聊天记录里，难以复用，也难以向新队员解释。</p>
+
+  <h3>1.1 观察到的现状</h3>
+  <ul>
+    <li><strong>信息分散：</strong>路线、集合点、偷塔人选、首领争夺时间常以“截图 + 手画 + 口头描述”传播，队员看到的版本不一致。</li>
+    <li><strong>复用困难：</strong>上一场的战术图无法按分类归档，也无法快速复制成“下一场只改两个人”的新方案。</li>
+    <li><strong>表达不精确：</strong>“上路靠前一点”“中路集合”缺少统一点位，队员对同一描述的理解可能不同。</li>
+    <li><strong>流派与人员脱节：</strong>名单在群公告里，站位在图上，二者对不上；临时换人时无法快速找到对应标记。</li>
+  </ul>
+
+  <h3>1.2 产品决策</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>做什么</h4>
+      <p>做一个无需登录、打开即用的网页战术沙盘：模板库分类管理；一张百业战示意地图；可放置地图标点与流派人物；可画路线、写文字；自动保存到浏览器；用 JSON 文件导入导出。</p>
+    </div>
+    <div class="card">
+      <h4>为什么这样做</h4>
+      <p>战队传播战术图最可靠的方式仍是“发文件”。纯前端 + 本地存储可以避免账号、服务器与隐私成本；JSON 文件便于在群聊中转发，也为后续分享链接与云端协作留出升级空间。</p>
+    </div>
+  </div>
+
+  <h3>1.3 目标（可观察）</h3>
+  <ul>
+    <li>指挥不依赖外部绘图软件，就能完成一张包含路线、资源点、流派人物与备注的战术图。</li>
+    <li>队员导入同一个模板文件后，看到与指挥端一致的对象位置、名称与图层状态。</li>
+    <li>上一场的模板可以被复制、改人名、改路线后再次使用，不需要从空白开始。</li>
+    <li>刷新页面或重新打开浏览器后，最近一次成功保存的模板仍然存在。</li>
+  </ul>
+
+  <h3>1.4 不做什么（P0 边界）</h3>
+  <ul>
+    <li>不接入游戏账号、对局数据或录像，不做自动复盘、胜率预测或自动指挥。</li>
+    <li>不做实时多人协同、云端同步、公会/战队账号体系。</li>
+    <li>不使用官方地图原画、Logo 或角色立绘；地图为自制结构示意。</li>
+    <li>不做移动端完整编辑；P0 以桌面浏览器为主。</li>
+    <li>不提供“官方认证战术”或强度结论；流派预设只是快捷标签。</li>
+  </ul>
+</section>
+
+<section id="s2">
+  <h2><span class="sec-num">02</span>玩法与流派研究</h2>
+  <p class="lead">这一节不是游戏百科，而是把公开机制翻译成产品约束：地图要表达什么、标点要覆盖哪些对象、人物名单要支持怎样的规模、模板分类应如何组织。</p>
+
+  <h3>2.1 百业战机制摘要</h3>
+  <table>
+    <thead><tr><th style="width:16%">机制</th><th style="width:44%">公开资料摘要</th><th>对产品的设计含义</th></tr></thead>
+    <tbody>
+      <tr>
+        <td>30v30 团队竞技</td>
+        <td>双方各 30 人，以百业为单位参战；历史公告称百业人数上限曾扩至 80 人，赛前需要从名单中挑选出场人员。<a href="#ref1">[1]</a><a href="#ref3">[3]</a></td>
+        <td>人物标记至少支持 30 人以上；需要花名册、分组、筛选与批量添加，避免逐个创建。</td>
+      </tr>
+      <tr>
+        <td>三路与人墙</td>
+        <td>攻略提到可“偷其余两路塔”，官方更新提到“上下两路”新增据点，说明战场存在上、中、下三路结构；每方三座人墙。<a href="#ref1">[1]</a><a href="#ref2">[2]</a><a href="#ref4">[4]</a></td>
+        <td>地图必须表达三路、每方三座人墙；标点支持“人墙”类型与“完好/受损/已摧毁”状态，便于做阶段方案。</td>
+      </tr>
+      <tr>
+        <td>胜负条件</td>
+        <td>击杀敌方大鹅后，将敌方发财树搬回并穿过己方大门即获胜；时间结束则比较双方人墙、大鹅血量，或发财树更接近哪方复活点。<a href="#ref1">[1]</a><a href="#ref2">[2]</a></td>
+        <td>需要“大鹅”“发财树”“大门/复活点”标点，以及“搬运路线”这类专用路线；模板分类中应有“终局搬树”。</td>
+      </tr>
+      <tr>
+        <td>人墙机制</td>
+        <td>摧毁任意一座人墙即可对敌方大鹅造成伤害；摧毁三座后大鹅被大幅削弱。官方更新提到人墙会按附近敌我人数叠加减伤，击破后对大鹅有更强削弱。<a href="#ref1">[1]</a><a href="#ref4">[4]</a></td>
+        <td>人墙标点需要状态与备注；“先破一路还是三路全破”应能在同一张图上用路线和文字表达。</td>
+      </tr>
+      <tr>
+        <td>中立资源</td>
+        <td>张豹、朱邪骨勒提供大量逗币；朱邪骨勒额外提供团队增伤，常被视为翻盘资源；刷新位置不固定，官方更新调整为原刷新时间前后 1 分钟随机。<a href="#ref1">[1]</a><a href="#ref4">[4]</a></td>
+        <td>需要中立首领标点，并允许标注“张豹/朱邪骨勒”“争夺/已击杀”“预计刷新”等备注；野区位置用区域而非固定点表达。</td>
+      </tr>
+      <tr>
+        <td>玄元教据点</td>
+        <td>上、下路据点，开局 3 分钟后刷新；占领后可选择在据点复活；占领后 1 分钟内不可变更归属。<a href="#ref4">[4]</a></td>
+        <td>需要“据点”标点与“中立/我方/敌方”状态；可作为复活点与转线节点。</td>
+      </tr>
+      <tr>
+        <td>中场演出</td>
+        <td>官方称“中场演出”，攻略常称“中场表演”；由社主指定人选参与，胜负可直接影响敌方人墙或大鹅血量。<a href="#ref1">[1]</a><a href="#ref4">[4]</a></td>
+        <td>需要“中场演出”事件标点，并能在人物花名册中标记“中场人选”。</td>
+      </tr>
+      <tr>
+        <td>指挥与逗币</td>
+        <td>击杀玩家、野怪、首领获得逗币；仅指挥可消耗，施放全队增益、搬树加速、打鹅增伤、快速复活、攻防指令等；官方提到指挥技能“无视拦截”和“快速操作”模式。<a href="#ref1">[1]</a><a href="#ref4">[4]</a></td>
+        <td>人物定位中需要“指挥”；标点中可加入“指挥技能”说明点；备注用于记录技能时机与目标。</td>
+      </tr>
+      <tr>
+        <td>阶段节奏</td>
+        <td>攻略通常把对局分为前期（打塔、打野、存逗币、偷塔）、中期（破至少一座人墙、中场演出、争夺张豹）、后期（破余塔、争夺朱邪骨勒、杀鹅搬树）。<a href="#ref1">[1]</a><a href="#ref2">[2]</a></td>
+        <td>P0 用模板分类 + 备注表达阶段；P1 增加“前期/中期/后期”方案页或图层，避免一张图过载。</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>2.1.1 可核实的地图布局</h3>
+  <p>公开攻略中的实机俯视截图可以确认以下相对关系，第 06 节的底图即按此重绘。<a href="#ref1">[1]</a><a href="#ref2">[2]</a></p>
+  <ul>
+    <li>双方基地分居地图左右两端；每个基地包含复活点、大鹅与发财树，基地大门朝向中路。</li>
+    <li>上、中、下三条通路横向连接左右基地；每方三座人墙分别位于三条路上，我方三座在左半区，敌方三座在右半区。</li>
+    <li>四片中立野区夹在上路—中路、中路—下路之间，左右各两片。</li>
+    <li>张豹与朱邪骨勒在地图中央的上、下两个候选点随机刷新（上下随机），不是固定一个点。</li>
+    <li>地图正中央为“中场演出”舞台。</li>
+    <li>玄元教据点为 2026-05-27 更新加入上、下路，开局 3 分钟刷新；公开截图中无法辨认其精确坐标，底图用虚线候选位表达。<a href="#ref4">[4]</a></li>
+  </ul>
+  <div class="assump">
+    <strong>[Assumption, TBD] 底图精度：</strong>布局关系可由公开截图核实，但没有可用的官方精确平面图，玄元教据点的精确点位也未核实。本 PRD 采用“按公开截图重绘的高清矢量结构图”，不嵌入官方截图或美术；若评审要求精确复刻，需要提供授权素材并重新评估版权与工作量。具体点位以游戏内为准。
+  </div>
+
+  <h3>2.2 流派与武器组合</h3>
+  <p>《燕云十六声》的“流派”更接近“武器 + 武学 + 团队定位”的搭配，而不是不可更改的职业。玩家可以在同一角色上切换武学，因此工具不应把流派做成硬性职业限制，而应做成<strong>可编辑的快捷标签</strong>：预设用于快速落点，用户可改简称、颜色与定位。<a href="#ref5">[5]</a><a href="#ref6">[6]</a></p>
+  <table>
+    <thead><tr><th style="width:15%">流派</th><th style="width:27%">常见武学 / 武器组合</th><th style="width:22%">团队定位</th><th style="width:10%">工具简称</th><th>来源</th></tr></thead>
+    <tbody>
+      <tr><td>牵丝·翊</td><td>扇 + 舞绫鼓</td><td>远程节奏输出、团队增益</td><td>翊</td><td><a href="#ref7">[7]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>牵丝·霖</td><td>明川药典 + 千香引魂蛊（扇 / 伞）</td><td>治疗、辅助、复活</td><td>霖</td><td><a href="#ref5">[5]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>牵丝·玉（走地 / 飞天）</td><td>青山执笔 + 九重春色（扇 / 伞）</td><td>远程控制、持续输出</td><td>玉</td><td><a href="#ref5">[5]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>破竹·风</td><td>泥犁三垢 + 粟子游尘（双刀 / 绳镖）</td><td>机动切入、偷塔、游击</td><td>风</td><td><a href="#ref5">[5]</a></td></tr>
+      <tr><td>破竹·鸢</td><td>天志垂象 + 千机索天（手甲 / 绳镖）</td><td>爆发输出、闪避反击</td><td>鸢</td><td><a href="#ref8">[8]</a></td></tr>
+      <tr><td>破竹·樽</td><td>悬身拳法 + 断水双诀（手甲 / 双刀）</td><td>近战爆发</td><td>樽</td><td><a href="#ref11">[11]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>破竹·尘</td><td>醉梦游春 + 粟子行云</td><td>远程、群攻、团队增益</td><td>尘</td><td><a href="#ref13">[13]</a></td></tr>
+      <tr><td>裂石·钧</td><td>斩雪刀法 + 十方破阵（唐横刀 / 陌刀）</td><td>均衡输出、上手稳定</td><td>钧</td><td><a href="#ref9">[9]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>裂石·威</td><td>嗟夫刀法 + 八方风雷枪</td><td>坦克、前排、聚怪</td><td>威</td><td><a href="#ref5">[5]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>鸣金·虹</td><td>无名剑法 + 无名枪法</td><td>稳健远程、新手友好</td><td>虹</td><td><a href="#ref5">[5]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>鸣金·影</td><td>积矩九剑 + 九曲惊魂枪</td><td>近战流血爆发</td><td>影</td><td><a href="#ref5">[5]</a><a href="#ref6">[6]</a></td></tr>
+      <tr><td>鸣金·霆</td><td>决狱悬锋枪 + 拨山取月枪（双枪）</td><td>强攻破阵、立架反击</td><td>霆</td><td><a href="#ref10">[10]</a></td></tr>
+      <tr><td>双剑（玩家俗称）</td><td>无名剑 + 九剑（双剑武学组合）</td><td>机动输出、偷塔</td><td>双剑</td><td><a href="#ref12">[12]</a></td></tr>
+      <tr><td>自定义</td><td>用户填写</td><td>输出 / 治疗 / 前排 / 侦察 / 指挥 / 自由人</td><td>自定</td><td>产品设计</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <strong>读表说明：</strong>“双剑”是玩家社区常见的双剑武学组合叫法，不等同于官方流派名；因用户示例中出现“双剑1号”，工具将其作为可选快捷标签保留。流派与武学组合会随版本调整，预设表只负责“快速开始”，最终以用户在模板中修改后的内容为准。
+  </div>
+
+  <h3>2.3 对设计的直接影响</h3>
+  <div class="grid-3">
+    <div class="card"><h4>地图要像“结构图”</h4><p>三路、三座人墙、双方基地、野区首领、上下路据点、中场事件必须一眼可辨。底图不能只是一张风景图。</p></div>
+    <div class="card"><h4>人物要能“成组”</h4><p>30 人规模下，逐个加人不可接受；需要按流派批量添加、自动编号、分组筛选与花名册定位。</p></div>
+    <div class="card"><h4>表达要覆盖“阶段”</h4><p>前期偷塔、中期首领、后期搬树是不同任务；P0 用分类和备注承载，P1 用阶段图层拆开。</p></div>
+  </div>
+</section>
+<section id="s3">
+  <h2><span class="sec-num">03</span>用户与核心场景</h2>
+  <p class="lead">产品的核心不是“画图”，而是让指挥把脑中的分工变成一张队员能照着执行的图。因此所有角色都围绕同一份模板文件协作，只是动作不同。</p>
+
+  <h3>3.1 用户角色</h3>
+  <table>
+    <thead><tr><th style="width:16%">角色</th><th style="width:24%">目标</th><th style="width:38%">关键动作</th><th>典型时刻</th></tr></thead>
+    <tbody>
+      <tr><td>社长 / 指挥</td><td>赛前把 30 人分工讲清楚，临场能快速调整</td><td>新建/复制模板；分配路线与人；标注资源点与集合点；导出后发群；赛后改图复盘</td><td>比赛前 1 天、开赛前 30 分钟、局间休息</td></tr>
+      <tr><td>战队队员</td><td>快速看懂“我去哪、什么时候去、和谁一起”</td><td>导入模板；查看地图与花名册；按路线执行；把自己的名字/流派核对一遍</td><td>赛前查看、比赛中查看</td></tr>
+      <tr><td>战术整理者</td><td>把有效打法沉淀成可复用资料</td><td>按分类归档；复制旧模板改版本；补充备注；整理“开局/偷塔/搬树”系列</td><td>赛后复盘、赛季准备</td></tr>
+      <tr><td>新队员</td><td>理解百业战的基本点位与流派分工</td><td>打开只读模板；逐层查看标点与人物；对照图例学习</td><td>入队培训</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    <strong>权限说明：</strong>P0 是单用户本地工具，不做账号与角色权限。所谓“队员”是通过收到 JSON 文件并在自己的浏览器导入来查看；文件本身即分享边界。P2 若做云端协作，再引入“只读链接/编辑权限”。
+  </div>
+
+  <h3>3.2 核心场景</h3>
+  <div class="grid-3">
+    <div class="card">
+      <h4>场景 A · 赛前分工</h4>
+      <p>指挥从“开局布防”分类复制上一场的模板，改名为“对 XX 社 · 三路开局”。把 30 人按流派批量加进花名册，拖到上/中/下路；用箭头画出偷塔路线，用“据点”标出玄元教刷新位置；导出 JSON 发群。</p>
+    </div>
+    <div class="card">
+      <h4>场景 B · 局间调整</h4>
+      <p>第一局发现上路被针对。指挥复制当前模板，把“翊1号”和“双剑1号”换到中路，新增“集合”标点，备注“张豹刷新前 30 秒集合”，导出第二版。</p>
+    </div>
+    <div class="card">
+      <h4>场景 C · 赛后复盘</h4>
+      <p>战术整理者打开“终局搬树”模板，用“大鹅/发财树/路线”复盘最后一波：标出失败点、敌方拦截点，另存为“复盘 · 搬树被拦”，归入“赛后复盘”。</p>
+    </div>
+  </div>
+
+  <h3>3.3 核心任务流程</h3>
+  <div class="flow">
+    <span class="step">进入模板库</span><span class="arrow">→</span>
+    <span class="step">选择分类 / 搜索</span><span class="arrow">→</span>
+    <span class="step">新建或复制模板</span><span class="arrow">→</span>
+    <span class="step">在地图上放标点 / 人物 / 路线</span><span class="arrow">→</span>
+    <span class="step">自动保存</span><span class="arrow">→</span>
+    <span class="step">导出 JSON</span><span class="arrow">→</span>
+    <span class="step">队员导入查看</span>
+  </div>
+  <p class="small">完成条件：队员导入后，地图对象的位置、名称、颜色、图层显隐与指挥端一致；刷新页面后，本机模板仍在。</p>
+
+  <h3>3.4 关键设计取舍</h3>
+  <table>
+    <thead><tr><th style="width:20%">取舍</th><th style="width:34%">选择</th><th>理由与代价</th></tr></thead>
+    <tbody>
+      <tr><td>本地优先 vs 云端</td><td>P0 浏览器本地存储 + JSON 文件</td><td>零登录、零服务器、隐私简单；代价是换设备/清缓存会丢数据，需要显式提醒导出备份。</td></tr>
+      <tr><td>示意地图 vs 精确复刻</td><td>P0 自制三路结构示意底图</td><td>避免版权风险，先保证“能讲清战术”；代价是与游戏内地图不完全一致，精确底图列为 P2/待确认。</td></tr>
+      <tr><td>固定画布 vs 无限画布</td><td>固定比例战术板，坐标归一化</td><td>不同屏幕导入后位置一致；代价是不能画地图外的内容，符合“一张地图一个模板”的定位。</td></tr>
+      <tr><td>流派硬限制 vs 可编辑标签</td><td>预设 + 自定义，可改简称与颜色</td><td>游戏版本会新增/调整流派；硬编码会很快过时，可编辑标签更耐用。</td></tr>
+      <tr><td>单图 vs 多阶段</td><td>P0 一张图；P1 阶段图层</td><td>P0 先用分类和备注表达前/中/后期，避免第一版就做复杂的多页状态；P1 再拆阶段。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s4">
+  <h2><span class="sec-num">04</span>产品范围</h2>
+  <p class="lead">P0 只保证一条完整旅程：从模板库进入，做出一张能发给队员的战术图，并能再次打开。P1 再增强表达力与传播方式。</p>
+
+  <h3>4.1 P0（MVP）</h3>
+  <table>
+    <thead><tr><th style="width:16%">模块</th><th style="width:40%">能力</th><th>完成证据</th></tr></thead>
+    <tbody>
+      <tr><td>模板库</td><td>分类浏览、搜索、排序；新建、重命名、复制、删除模板；显示缩略图、分类、人数、更新时间</td><td>用户能在 6 个预设分类与自建分类间切换，并找到目标模板</td></tr>
+      <tr><td>战术编辑器</td><td>一张三路示意地图；25%–400% 缩放/平移；框选局部部署；图层面板；选择、拖拽、删除对象</td><td>地图可缩放至 25%–400%；框选上路局部放大后仍能准确落点；对象拖拽后位置保持</td></tr>
+      <tr><td>地图标点</td><td>集合、进攻、防守、侦察、危险、人墙、大鹅、发财树、中立首领、据点、中场演出、复活点、指挥技能、自定义</td><td>每种标点可放置、改名、改色、改大小、写备注、设状态</td></tr>
+      <tr><td>流派人物</td><td>流派预设 + 自定义；批量添加同流派；自动编号；改名；阵营/队伍/定位；花名册定位与显隐</td><td>能创建“翊1号”“双剑1号”等人物，并在花名册与地图间双向定位</td></tr>
+      <tr><td>路线与文字</td><td>折线箭头（进攻/防守/撤退/自定义）；文字标签</td><td>能画出“偷上路”“搬树回大门”等路线并加文字说明</td></tr>
+      <tr><td>本地保存</td><td>编辑自动保存；保存状态；刷新恢复；存储失败提示</td><td>刷新浏览器后模板内容不变；存储失败时有可见提示与导出入口</td></tr>
+      <tr><td>导入导出</td><td>单模板 JSON 导出；导入预览、校验、作为新模板/覆盖现有模板</td><td>导出文件可在另一浏览器导入，位置与名称一致；错误文件有明确提示</td></tr>
+      <tr><td>基础体验</td><td>空状态、错误状态、删除确认、撤销/重做、帮助与快捷键</td><td>误删对象可撤销；无模板/无搜索结果时有引导</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.2 P1（下一阶段）</h3>
+  <table>
+    <thead><tr><th style="width:20%">能力</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>阶段方案页</td><td>同一模板内增加“前期/中期/后期”方案页，可复制上一阶段；或改为可切换的阶段图层。</td></tr>
+      <tr><td>区域标注</td><td>矩形/椭圆区域，半透明填充 + 标签，用于“野区控制范围”“拦截区”“集火区”。</td></tr>
+      <tr><td>多选与对齐</td><td>框选多个对象、批量移动/改色/删除；水平/垂直对齐与等距分布。</td></tr>
+      <tr><td>导出图片</td><td>导出 PNG，含标题、图例、时间与“非官方示意”水印，便于发群。</td></tr>
+      <tr><td>全量备份</td><td>一次导出全部模板与分类；导入时合并或覆盖。</td></tr>
+      <tr><td>只读分享链接</td><td>不依赖后端的压缩分享链接（内容较长时有长度限制），或引入轻量后端。</td></tr>
+      <tr><td>人物名单导入</td><td>按“名字,流派,队伍”批量导入 30 人名单，自动生成标记。</td></tr>
+      <tr><td>模板版本历史</td><td>本机保留最近若干次保存快照，可回滚；解决“改坏了想退回”。</td></tr>
+      <tr><td>平板/移动只读</td><td>小屏只读查看，不保证完整编辑。</td></tr>
+    </tbody>
+  </table>
+
+  <h3>4.3 P2（暂不排期）</h3>
+  <ul>
+    <li>账号体系、云端同步、战队空间与权限管理。</li>
+    <li>多人实时协同编辑、评论、@提醒。</li>
+    <li>官方精确地图底图、官方素材包、赛事数据接入。</li>
+    <li>录像时间轴联动、自动识别站位、AI 战术建议。</li>
+    <li>模板市场、公开分享社区、排行榜。</li>
+  </ul>
+
+  <h3>4.4 P0 完成标志</h3>
+  <div class="note">
+    在一个桌面浏览器中，用户能够：创建分类 → 新建模板 → 放置至少 10 个标点、10 个人物、2 条路线和 2 段文字 → 修改人物名称 → 刷新页面后内容仍在 → 导出 JSON → 在另一个浏览器配置中导入为新模板 → 看到一致的地图与花名册。以上全部成立，且无效导入/存储失败都有可见提示，即视为 P0 范围完成。
+  </div>
+</section>
+
+<section id="s5">
+  <h2><span class="sec-num">05</span>信息架构</h2>
+  <p class="lead">产品只有两个主页面：模板库与编辑器。导入、导出、新建、删除都以弹窗完成，避免多级页面打断“看图”的连续性。</p>
+
+  <h3>5.1 站点地图</h3>
+  <div class="flow">
+    <span class="step">模板库（首页）</span><span class="arrow">→</span>
+    <span class="step">战术编辑器</span><span class="arrow">→</span>
+    <span class="step">导出弹窗</span>
+  </div>
+  <div class="flow">
+    <span class="step">模板库</span><span class="arrow">→</span>
+    <span class="step">导入预览弹窗</span><span class="arrow">→</span>
+    <span class="step">导入成功 / 打开模板</span>
+  </div>
+  <div class="flow">
+    <span class="step">任意页面</span><span class="arrow">→</span>
+    <span class="step">帮助抽屉（快捷键 / 数据说明 / 版本）</span>
+  </div>
+
+  <h3>5.2 页面与区域</h3>
+  <table>
+    <thead><tr><th style="width:16%">页面 / 弹窗</th><th style="width:22%">目的</th><th style="width:38%">主要区域</th><th>入口 / 出口</th></tr></thead>
+    <tbody>
+      <tr><td>模板库</td><td>浏览、查找、创建、导入模板</td><td>顶部导航；分类栏；搜索/筛选；模板卡片网格；空状态</td><td>首页；点击卡片进入编辑器；新建/导入弹窗</td></tr>
+      <tr><td>战术编辑器</td><td>完成一张战术图</td><td>顶部栏；左侧模板信息/图层；中央地图与浮动工具；右侧花名册/属性；底部状态栏</td><td>从模板库进入；返回模板库；导出弹窗</td></tr>
+      <tr><td>新建模板弹窗</td><td>填写名称、分类、地图、备注</td><td>名称、分类、地图、描述、创建/取消</td><td>模板库“新建战术”；创建后进入编辑器</td></tr>
+      <tr><td>添加人物弹窗</td><td>按流派批量添加人物</td><td>流派网格；数量；命名规则；阵营/队伍/定位；预览；添加</td><td>编辑器工具栏/花名册“+”；添加后回到编辑器</td></tr>
+      <tr><td>导入预览弹窗</td><td>导入前确认识别结果与冲突</td><td>文件信息；校验结果；作为新模板/覆盖现有；导入/取消</td><td>模板库“导入”；成功后打开或留在列表</td></tr>
+      <tr><td>导出弹窗</td><td>确认导出范围与文件名</td><td>模板摘要；文件名；下载；提示</td><td>编辑器“导出”；下载后关闭</td></tr>
+      <tr><td>帮助抽屉</td><td>解释数据存储、快捷键与版本</td><td>三步上手；快捷键表；本地数据说明；版本号</td><td>顶部“帮助”；任意页面可开</td></tr>
+    </tbody>
+  </table>
+
+  <h3>5.3 编辑器区域职责</h3>
+  <table>
+    <thead><tr><th style="width:18%">区域</th><th style="width:16%">尺寸建议</th><th>职责</th></tr></thead>
+    <tbody>
+      <tr><td>顶部栏</td><td>高 56px</td><td>返回；模板名（可内联改名）；分类徽标；保存状态；撤销/重做；帮助；导出</td></tr>
+      <tr><td>左侧面板</td><td>宽 280px</td><td>模板信息（分类、地图、描述、标签）；图层显隐；底图说明</td></tr>
+      <tr><td>中央画布</td><td>自适应，建议 ≥640px 宽</td><td>地图、浮动工具栏、缩放与局部部署控件、图例开关、选中对象</td></tr>
+      <tr><td>右侧面板</td><td>宽 320px</td><td>“花名册 / 属性 / 图例”三个页签；人物列表与选中对象属性</td></tr>
+      <tr><td>底部状态栏</td><td>高 28px</td><td>对象数、人物数、当前缩放、保存时间、地图版本</td></tr>
+    </tbody>
+  </table>
+</section>
+<section id="s6">
+  <h2><span class="sec-num">06</span>UI 设计</h2>
+  <p class="lead">视觉方向是“墨线沙盘”：像铺在桌上的宣纸地图，用墨线、朱砂与青绿区分敌我，而不是复刻游戏内 HUD。所有线框只用于评审布局与交互，不代表最终视觉稿。</p>
+
+  <h3>6.1 设计原则</h3>
+  <div class="grid-2">
+    <div class="card">
+      <h4>地图优先</h4>
+      <p>编辑器中央画布应占据最大面积；左右面板可折叠但不能挤压地图到不可用。用户打开页面第一眼应看到战场，而不是表单。</p>
+    </div>
+    <div class="card">
+      <h4>一屏完成</h4>
+      <p>放点、改属性、看花名册都在同一屏完成；不因“编辑人物”跳到新页面。弹窗只用于新建、导入、导出等一次性动作。</p>
+    </div>
+    <div class="card">
+      <h4>状态可见</h4>
+      <p>选中、拖拽、保存中、已保存、导入失败、存储失败都要有明确反馈；不能让用户猜“刚才那下有没有生效”。</p>
+    </div>
+    <div class="card">
+      <h4>不依赖颜色</h4>
+      <p>敌我、流派、对象类型同时用图标形状、文字标签与颜色表达；色弱用户也能区分。删除模板/分类必须二次确认。</p>
+    </div>
+  </div>
+
+  <h3>6.2 色彩系统</h3>
+  <p>主色取自宣纸、墨、朱砂与青绿；朱砂只用于“敌方/进攻/危险”等高注意力信息，避免整页发红。</p>
+  <div class="swatches">
+    <div class="swatch"><i style="background:#F3EEE3"></i>宣纸底 #F3EEE3</div>
+    <div class="swatch"><i style="background:#FBF7EE"></i>面板 #FBF7EE</div>
+    <div class="swatch"><i style="background:#1F2420"></i>墨 #1F2420</div>
+    <div class="swatch"><i style="background:#596157"></i>次墨 #596157</div>
+    <div class="swatch"><i style="background:#B23A2E"></i>朱砂 #B23A2E</div>
+    <div class="swatch"><i style="background:#2F6F6A"></i>青 #2F6F6A</div>
+    <div class="swatch"><i style="background:#B08A45"></i>金 #B08A45</div>
+    <div class="swatch"><i style="background:#3F7D58"></i>治疗绿 #3F7D58</div>
+    <div class="swatch"><i style="background:#B7791F"></i>警告 #B7791F</div>
+    <div class="swatch"><i style="background:#7C8178"></i>中立灰 #7C8178</div>
+  </div>
+  <table>
+    <thead><tr><th style="width:18%">语义</th><th style="width:20%">色值</th><th>用法</th></tr></thead>
+    <tbody>
+      <tr><td>我方 / 防守</td><td>青 #2F6F6A</td><td>我方人物外圈、防守路线、治疗/辅助标签、主按钮悬停</td></tr>
+      <tr><td>敌方 / 进攻</td><td>朱砂 #B23A2E</td><td>敌方人物外圈、进攻路线、危险标点、删除确认</td></tr>
+      <tr><td>选中 / 高亮</td><td>金 #B08A45</td><td>选中光环、当前分类、关键提示、标题装饰</td></tr>
+      <tr><td>中立</td><td>灰 #7C8178</td><td>中立人物、野怪、未归属据点</td></tr>
+      <tr><td>成功</td><td>绿 #3F7D58</td><td>已保存、导入成功、治疗流派</td></tr>
+      <tr><td>警告</td><td>琥珀 #B7791F</td><td>存储将满、文件版本较新、覆盖提醒</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.3 字体与排版</h3>
+  <table>
+    <thead><tr><th style="width:20%">层级</th><th style="width:24%">规格</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>页面标题</td><td>28–32px / 1.3，宋体</td><td>模板库标题、编辑器模板名（大屏）</td></tr>
+      <tr><td>区块标题</td><td>18–20px / 1.4，宋体</td><td>面板标题、弹窗标题</td></tr>
+      <tr><td>正文</td><td>14px / 1.7，黑体</td><td>说明、表单、列表</td></tr>
+      <tr><td>辅助</td><td>12px / 1.5，黑体</td><td>时间、计数、字段提示</td></tr>
+      <tr><td>地图标签</td><td>11–12px，黑体</td><td>地名、图例、人物名；必须有浅色底衬保证可读</td></tr>
+    </tbody>
+  </table>
+  <p class="small">字体优先使用系统可用字体：标题回退到 Songti SC / SimSun，正文回退到 PingFang SC / Microsoft YaHei；不加载大体积外部字体，保证离线可用。</p>
+
+  <h3>6.4 布局与响应式</h3>
+  <ul>
+    <li>推荐桌面分辨率 1440×900；最低编辑宽度 1280px。低于 1280px 时左右面板可折叠为图标条，地图仍保持可操作。</li>
+    <li>低于 1024px 不做完整编辑，展示“请在桌面浏览器使用编辑器；可只读查看”的提示。P0 不承诺移动端编辑。</li>
+    <li>模板库卡片网格：≥1440px 三列，1280–1439px 两列，低于 1280px 单列；卡片最小宽度 260px。</li>
+    <li>统一间距 4/8/12/16/24/32；面板内边距 16px；卡片圆角 10px；弹窗圆角 12px。</li>
+    <li>阴影只用于浮层与选中态，避免整页“卡片化”过重。</li>
+  </ul>
+
+  <h3>6.5 百业战底图（高清结构示意）</h3>
+  <p>底图按公开实机俯视截图重绘，只保留战术需要的结构与语义：双方基地在左右两端，三条横向通路连接两端，每方三座人墙分别位于三路，四片野区夹在路间，中央是首领候选点与中场舞台。不嵌入官方截图或官方美术资源。<a href="#ref2">[2]</a><a href="#ref4">[4]</a></p>
+
+  <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false">
+    <defs>
+      <pattern id="map-dots" width="40" height="40" patternUnits="userSpaceOnUse">
+        <circle cx="2" cy="2" r="1" fill="#D8D0BF"></circle>
+      </pattern>
+      <g id="baizhan-map-art">
+        <rect x="0" y="0" width="1600" height="900" fill="#EFE7D6"></rect>
+        <rect x="26" y="32" width="1548" height="836" rx="18" fill="#E7DDC9" stroke="#BDB3A0" stroke-width="2"></rect>
+        <rect x="88" y="96" width="1424" height="712" rx="10" fill="#F3EEE3" stroke="#D8D0BF" stroke-width="1.5"></rect>
+        <rect x="96" y="104" width="1408" height="696" rx="8" fill="url(#map-dots)" opacity="0.55"></rect>
+
+        <rect x="240" y="164" width="1120" height="132" rx="22" fill="#E9DFCC" stroke="#D8D0BF" stroke-width="1.2"></rect>
+        <rect x="240" y="384" width="1120" height="132" rx="22" fill="#E9DFCC" stroke="#D8D0BF" stroke-width="1.2"></rect>
+        <rect x="240" y="604" width="1120" height="132" rx="22" fill="#E9DFCC" stroke="#D8D0BF" stroke-width="1.2"></rect>
+
+        <rect x="320" y="306" width="290" height="70" rx="12" fill="#E2EFE7" stroke="#3F7D58" stroke-width="1.5" stroke-dasharray="6 4"></rect>
+        <rect x="990" y="306" width="290" height="70" rx="12" fill="#E2EFE7" stroke="#3F7D58" stroke-width="1.5" stroke-dasharray="6 4"></rect>
+        <rect x="320" y="524" width="290" height="70" rx="12" fill="#E2EFE7" stroke="#3F7D58" stroke-width="1.5" stroke-dasharray="6 4"></rect>
+        <rect x="990" y="524" width="290" height="70" rx="12" fill="#E2EFE7" stroke="#3F7D58" stroke-width="1.5" stroke-dasharray="6 4"></rect>
+
+        <rect x="106" y="314" width="150" height="272" rx="12" fill="#DCEAE6" stroke="#2F6F6A" stroke-width="2.5"></rect>
+        <text x="181" y="348" text-anchor="middle" font-size="24" font-weight="700" fill="#245B57">我方基地</text>
+        <circle cx="136" cy="386" r="15" fill="#FBF7EE" stroke="#2F6F6A" stroke-width="1.6"></circle>
+        <text x="136" y="391" text-anchor="middle" font-size="13" font-weight="700" fill="#245B57">复</text>
+        <text x="158" y="391" font-size="18" fill="#3A5F5A">复活点</text>
+        <circle cx="136" cy="444" r="15" fill="#FBF7EE" stroke="#2F6F6A" stroke-width="1.6"></circle>
+        <text x="136" y="449" text-anchor="middle" font-size="13" font-weight="700" fill="#245B57">鹅</text>
+        <text x="158" y="449" font-size="18" fill="#3A5F5A">大鹅</text>
+        <circle cx="136" cy="502" r="15" fill="#FBF7EE" stroke="#B08A45" stroke-width="1.6"></circle>
+        <text x="136" y="507" text-anchor="middle" font-size="13" font-weight="700" fill="#6B5A2E">树</text>
+        <text x="158" y="507" font-size="18" fill="#3A5F5A">发财树</text>
+
+        <rect x="1344" y="314" width="150" height="272" rx="12" fill="#F3DEDA" stroke="#B23A2E" stroke-width="2.5"></rect>
+        <text x="1419" y="348" text-anchor="middle" font-size="24" font-weight="700" fill="#7A241C">敌方基地</text>
+        <circle cx="1464" cy="386" r="15" fill="#FBF7EE" stroke="#B23A2E" stroke-width="1.6"></circle>
+        <text x="1464" y="391" text-anchor="middle" font-size="13" font-weight="700" fill="#7A241C">复</text>
+        <text x="1442" y="391" text-anchor="end" font-size="18" fill="#7A4A44">复活点</text>
+        <circle cx="1464" cy="444" r="15" fill="#FBF7EE" stroke="#B23A2E" stroke-width="1.6"></circle>
+        <text x="1464" y="449" text-anchor="middle" font-size="13" font-weight="700" fill="#7A241C">鹅</text>
+        <text x="1442" y="449" text-anchor="end" font-size="18" fill="#7A4A44">大鹅</text>
+        <circle cx="1464" cy="502" r="15" fill="#FBF7EE" stroke="#B08A45" stroke-width="1.6"></circle>
+        <text x="1464" y="507" text-anchor="middle" font-size="13" font-weight="700" fill="#6B5A2E">树</text>
+        <text x="1442" y="507" text-anchor="end" font-size="18" fill="#7A4A44">发财树</text>
+
+        <rect x="250" y="424" width="8" height="52" rx="3" fill="#B08A45"></rect>
+        <text x="256" y="506" text-anchor="middle" font-size="15" font-weight="600" fill="#8A6E3A">大门</text>
+        <rect x="1342" y="424" width="8" height="52" rx="3" fill="#B08A45"></rect>
+        <text x="1344" y="506" text-anchor="middle" font-size="15" font-weight="600" fill="#8A6E3A">大门</text>
+
+        <text x="286" y="240" font-size="22" font-weight="600" fill="#8A8F84">上路</text>
+        <text x="286" y="460" font-size="22" font-weight="600" fill="#8A8F84">中路</text>
+        <text x="286" y="680" font-size="22" font-weight="600" fill="#8A8F84">下路</text>
+
+        <g>
+          <rect x="477" y="209" width="46" height="46" rx="8" fill="#F1E6CE" stroke="#B08A45" stroke-width="2.5"></rect>
+          <text x="500" y="241" text-anchor="middle" font-size="20" font-weight="700" fill="#6B5A2E">墙</text>
+          <rect x="477" y="427" width="46" height="46" rx="8" fill="#F1E6CE" stroke="#B08A45" stroke-width="2.5"></rect>
+          <text x="500" y="459" text-anchor="middle" font-size="20" font-weight="700" fill="#6B5A2E">墙</text>
+          <rect x="477" y="645" width="46" height="46" rx="8" fill="#F1E6CE" stroke="#B08A45" stroke-width="2.5"></rect>
+          <text x="500" y="677" text-anchor="middle" font-size="20" font-weight="700" fill="#6B5A2E">墙</text>
+          <rect x="1077" y="209" width="46" height="46" rx="8" fill="#F1E6CE" stroke="#B08A45" stroke-width="2.5"></rect>
+          <text x="1100" y="241" text-anchor="middle" font-size="20" font-weight="700" fill="#6B5A2E">墙</text>
+          <rect x="1077" y="427" width="46" height="46" rx="8" fill="#F1E6CE" stroke="#B08A45" stroke-width="2.5"></rect>
+          <text x="1100" y="459" text-anchor="middle" font-size="20" font-weight="700" fill="#6B5A2E">墙</text>
+          <rect x="1077" y="645" width="46" height="46" rx="8" fill="#F1E6CE" stroke="#B08A45" stroke-width="2.5"></rect>
+          <text x="1100" y="677" text-anchor="middle" font-size="20" font-weight="700" fill="#6B5A2E">墙</text>
+        </g>
+
+        <text x="465" y="350" text-anchor="middle" font-size="18" font-weight="600" fill="#3F7D58">上野区 · 左</text>
+        <text x="1135" y="350" text-anchor="middle" font-size="18" font-weight="600" fill="#3F7D58">上野区 · 右</text>
+        <text x="465" y="568" text-anchor="middle" font-size="18" font-weight="600" fill="#3F7D58">下野区 · 左</text>
+        <text x="1135" y="568" text-anchor="middle" font-size="18" font-weight="600" fill="#3F7D58">下野区 · 右</text>
+
+        <circle cx="800" cy="341" r="24" fill="#FBF7EE" stroke="#7C8178" stroke-width="2" stroke-dasharray="5 4"></circle>
+        <text x="800" y="348" text-anchor="middle" font-size="17" font-weight="700" fill="#5E665F">首</text>
+        <text x="836" y="336" font-size="20" font-weight="600" fill="#4E554C">张豹 / 朱邪骨勒</text>
+        <text x="836" y="358" font-size="16" fill="#7C8178">上下随机刷新</text>
+        <circle cx="800" cy="559" r="24" fill="#FBF7EE" stroke="#7C8178" stroke-width="2" stroke-dasharray="5 4"></circle>
+        <text x="800" y="566" text-anchor="middle" font-size="17" font-weight="700" fill="#5E665F">首</text>
+        <text x="836" y="566" font-size="16" fill="#7C8178">另一候选点</text>
+
+        <rect x="726" y="414" width="148" height="72" rx="12" fill="#F1E6CE" stroke="#B08A45" stroke-width="2" stroke-dasharray="7 5"></rect>
+        <text x="800" y="447" text-anchor="middle" font-size="20" font-weight="700" fill="#6B5A2E">中场演出</text>
+        <text x="800" y="469" text-anchor="middle" font-size="14" fill="#8A6E3A">中央舞台</text>
+
+        <circle cx="800" cy="232" r="27" fill="#FBF7EE" stroke="#7C8178" stroke-width="2" stroke-dasharray="5 4"></circle>
+        <text x="800" y="240" text-anchor="middle" font-size="18" font-weight="700" fill="#5E665F">据</text>
+        <text x="800" y="286" text-anchor="middle" font-size="17" fill="#7C8178">玄元教 · 位置待实测</text>
+        <circle cx="800" cy="668" r="27" fill="#FBF7EE" stroke="#7C8178" stroke-width="2" stroke-dasharray="5 4"></circle>
+        <text x="800" y="676" text-anchor="middle" font-size="18" font-weight="700" fill="#5E665F">据</text>
+        <text x="800" y="626" text-anchor="middle" font-size="17" fill="#7C8178">玄元教 · 位置待实测</text>
+
+        <text x="58" y="76" font-size="18" fill="#8A8F84" letter-spacing="2">百业战 · 30v30</text>
+        <text x="1512" y="846" text-anchor="end" font-size="16" fill="#8A8F84">结构示意 · 非官方地图 · 按公开截图重绘</text>
+      </g>
+    </defs>
+  </svg>
+
+  <div class="map-figure">
+    <svg viewBox="0 0 1600 900" role="img" aria-labelledby="map-art-title map-art-desc">
+      <title id="map-art-title">百业战三路结构示意底图</title>
+      <desc id="map-art-desc">我方基地在左，敌方基地在右；上中下三条横向通路；每方三座人墙；四片中立野区；中央上下两个中立首领候选点与中场演出舞台；上下路各有一个玄元教据点候选位。</desc>
+      <use href="#baizhan-map-art"></use>
+    </svg>
+  </div>
+  <div class="map-legend">
+    <span><i style="background:#DCEAE6;border-color:#2F6F6A"></i>我方基地</span>
+    <span><i style="background:#F3DEDA;border-color:#B23A2E"></i>敌方基地</span>
+    <span><i style="background:#F1E6CE;border-color:#B08A45"></i>人墙 / 中场舞台</span>
+    <span><i style="background:#E2EFE7;border-color:#3F7D58"></i>中立野区</span>
+    <span><i style="background:#FBF7EE;border-color:#7C8178"></i>中立首领 / 玄元教据点</span>
+  </div>
+  <p class="map-note"><strong>图 6-1</strong> 百业战底图（结构示意，非官方地图）。布局依据公开攻略的实机俯视截图重绘：双方基地分居左右，上/中/下三条横向通路连接两端，每方三座人墙分别位于三路，四片野区夹在路间，张豹与朱邪骨勒在中央上/下两个候选点随机刷新。<a href="#ref2">[2]</a> 玄元教据点为 2026-05-27 更新加入上、下路，官方未给出精确坐标，底图以虚线表示候选位置，<strong>具体点位以游戏内为准</strong>，可用“据点”标点在模板中精确记录。<a href="#ref4">[4]</a> 底图不嵌入官方截图或美术资源。</p>
+
+  <h3>6.6 线框示意</h3>
+  <p>以下线框用于确认信息层级与操作路径，不代表最终配色与图标精度。底图见 6.5；线框中的地图文字较小，实际使用时可缩放查看。</p>
+
+  <h4>线框 A · 模板库</h4>
+  <div class="wire">
+    <div class="wf">
+      <div class="wf-bar"><span class="wf-dot"></span><span class="wf-dot"></span><span class="wf-dot"></span><span class="wf-url">百业沙盘 / 模板库</span></div>
+      <div class="wf-top">
+        <div class="wf-logo">百业沙盘</div>
+        <div class="wf-search">搜索模板名称、标签或人物名</div>
+        <div class="wf-btn">帮助</div>
+        <div class="wf-btn">导入</div>
+        <div class="wf-btn primary">新建战术</div>
+      </div>
+      <div class="wf-library">
+        <aside class="wf-cats">
+          <div class="cat-title">战术分类</div>
+          <div class="item active"><span>全部模板</span><span>12</span></div>
+          <div class="item"><span>开局布防</span><span>4</span></div>
+          <div class="item"><span>进攻偷塔</span><span>3</span></div>
+          <div class="item"><span>资源争夺</span><span>2</span></div>
+          <div class="item"><span>中场演出</span><span>1</span></div>
+          <div class="item"><span>终局搬树</span><span>1</span></div>
+          <div class="item"><span>赛后复盘</span><span>1</span></div>
+          <div class="item"><span>未分类</span><span>0</span></div>
+          <div class="item" style="margin-top:8px;color:#2F6F6A">+ 新建分类</div>
+        </aside>
+        <div class="wf-grid">
+          <div class="wf-card">
+            <div class="wf-thumb one"><span class="dot" style="left:46%;top:66%"></span><span class="dot red" style="left:28%;top:22%"></span><span class="dot gold" style="left:66%;top:44%"></span></div>
+            <div class="wf-card-body"><div class="wf-card-title">三路开局 · 翊1队</div><div class="wf-card-meta"><span>开局布防</span><span>18人 · 11-22</span></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-thumb one"><span class="dot red" style="left:34%;top:30%"></span><span class="dot" style="left:54%;top:58%"></span><span class="dot red" style="left:72%;top:36%"></span></div>
+            <div class="wf-card-body"><div class="wf-card-title">偷上路 · 双剑快攻</div><div class="wf-card-meta"><span>进攻偷塔</span><span>12人 · 11-22</span></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-thumb one"><span class="dot gold" style="left:22%;top:44%"></span><span class="dot" style="left:50%;top:54%"></span><span class="dot red" style="left:78%;top:42%"></span></div>
+            <div class="wf-card-body"><div class="wf-card-title">张豹争夺 · 30秒集合</div><div class="wf-card-meta"><span>资源争夺</span><span>24人 · 11-21</span></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-thumb one"><span class="dot" style="left:44%;top:72%"></span><span class="dot gold" style="left:50%;top:34%"></span><span class="dot red" style="left:56%;top:18%"></span></div>
+            <div class="wf-card-body"><div class="wf-card-title">终局杀鹅 · 搬树路线</div><div class="wf-card-meta"><span>终局搬树</span><span>30人 · 11-20</span></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-thumb one"><span class="dot gold" style="left:50%;top:50%"></span><span class="dot" style="left:38%;top:60%"></span><span class="dot" style="left:62%;top:60%"></span></div>
+            <div class="wf-card-body"><div class="wf-card-title">中场演出 · 人选A</div><div class="wf-card-meta"><span>中场演出</span><span>8人 · 11-19</span></div></div>
+          </div>
+          <div class="wf-card">
+            <div class="wf-thumb one"><span class="dot red" style="left:36%;top:56%"></span><span class="dot red" style="left:48%;top:38%"></span><span class="dot gold" style="left:64%;top:26%"></span></div>
+            <div class="wf-card-body"><div class="wf-card-title">复盘 · 下路失守</div><div class="wf-card-meta"><span>赛后复盘</span><span>30人 · 11-18</span></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="wire-caption">线框 A：模板库。分类在左，卡片在右；每张卡片直接显示缩略图与“分类 / 人数 / 更新时间”。</div>
+  <ol class="annotations">
+    <li><strong>顶部导航：</strong>品牌、搜索、帮助、导入、新建。导入与新建是最高频的两个入口。</li>
+    <li><strong>分类栏：</strong>“全部模板”是视图，不是分类；预设分类覆盖开局、偷塔、资源、中场、终局、复盘；支持自建分类。</li>
+    <li><strong>模板卡片：</strong>缩略图自动取当前地图视图；标题可内联改名；卡片右上角“更多”提供复制、导出、删除。</li>
+    <li><strong>空状态：</strong>无模板时显示“新建空白模板 / 导入模板文件”，不显示空白网格。</li>
+    <li><strong>搜索无结果：</strong>显示关键词与“清除筛选”，避免用户以为数据丢了。</li>
+  </ol>
+
+  <h4>线框 B · 战术编辑器</h4>
+  <div class="wire">
+    <div class="wf wf-editor">
+      <div class="wf-bar"><span class="wf-dot"></span><span class="wf-dot"></span><span class="wf-dot"></span><span class="wf-url">百业沙盘 / 编辑器 / 三路开局 · 翊1队</span></div>
+      <div class="wf-editor-top">
+        <span class="wf-btn">← 返回</span>
+        <span class="wf-title">三路开局 · 翊1队</span>
+        <span class="wf-save">已保存 14:32</span>
+        <span style="flex:1"></span>
+        <span class="wf-btn">撤销</span><span class="wf-btn">重做</span><span class="wf-btn">帮助</span><span class="wf-btn primary">导出</span>
+      </div>
+      <div class="wf-editor-main">
+        <aside class="wf-panel">
+          <div class="wf-panel-title">模板信息</div>
+          <div class="wf-field-row"><span>分类</span><span>开局布防</span></div>
+          <div class="wf-field-row"><span>地图</span><span>百业战 · 三路</span></div>
+          <div class="wf-field-row"><span>人数</span><span>18 / 30</span></div>
+          <div class="wf-field-row"><span>更新</span><span>11-22 14:32</span></div>
+          <div class="wf-panel-title" style="margin-top:12px">图层</div>
+          <div class="wf-layer"><span class="wf-check on"></span>地图底图（锁定）</div>
+          <div class="wf-layer"><span class="wf-check on"></span>标点</div>
+          <div class="wf-layer"><span class="wf-check on"></span>人物</div>
+          <div class="wf-layer"><span class="wf-check on"></span>路线与文字</div>
+          <div class="wf-panel-title" style="margin-top:12px">底图说明</div>
+          <div style="font-size:8.5px;color:#7A7468;line-height:1.6">三路示意，非官方精确地图。上路/下路据点开局 3 分钟刷新。</div>
+        </aside>
+        <div class="wf-canvas">
+          <div class="wf-tools"><span class="wf-tool">选择</span><span class="wf-tool active">标点</span><span class="wf-tool">人物</span><span class="wf-tool">路线</span><span class="wf-tool">文字</span><span class="wf-tool">局部部署</span></div>
+          <svg class="map-svg" viewBox="0 0 1600 900" role="img" aria-label="百业战三路结构示意地图，含示例人物与偷上路路线">
+            <defs>
+              <marker id="wf-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#B23A2E"></path>
+              </marker>
+            </defs>
+            <use href="#baizhan-map-art"></use>
+            <path d="M 330 450 C 450 430 560 300 660 272 L 1050 236" fill="none" stroke="#B23A2E" stroke-width="8" stroke-dasharray="20 14" marker-end="url(#wf-arrow)"></path>
+            <text x="660" y="300" text-anchor="middle" font-size="22" font-weight="700" fill="#B23A2E" stroke="#FBF7EE" stroke-width="6" paint-order="stroke">偷上路</text>
+            <g>
+              <circle cx="380" cy="500" r="30" fill="#3F7D58" stroke="#2F6F6A" stroke-width="3"></circle>
+              <text x="380" y="507" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">翊</text>
+              <text x="380" y="548" text-anchor="middle" font-size="22" fill="#1F2420" stroke="#FBF7EE" stroke-width="6" paint-order="stroke">翊1号</text>
+              <circle cx="330" cy="570" r="30" fill="#8C8F9A" stroke="#6E727C" stroke-width="3"></circle>
+              <text x="330" y="577" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">双剑</text>
+              <text x="330" y="618" text-anchor="middle" font-size="22" fill="#1F2420" stroke="#FBF7EE" stroke-width="6" paint-order="stroke">双剑1号</text>
+              <circle cx="450" cy="570" r="30" fill="#3F7D58" stroke="#2F6F6A" stroke-width="3"></circle>
+              <text x="450" y="577" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">霖</text>
+              <text x="450" y="618" text-anchor="middle" font-size="22" fill="#1F2420" stroke="#FBF7EE" stroke-width="6" paint-order="stroke">霖1号</text>
+              <circle cx="360" cy="300" r="30" fill="#2F6F6A" stroke="#245B57" stroke-width="3"></circle>
+              <text x="360" y="307" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">风</text>
+              <text x="360" y="348" text-anchor="middle" font-size="22" fill="#1F2420" stroke="#FBF7EE" stroke-width="6" paint-order="stroke">风1号</text>
+              <circle cx="1240" cy="420" r="30" fill="#C05A4E" stroke="#B23A2E" stroke-width="3"></circle>
+              <text x="1240" y="427" text-anchor="middle" font-size="16" font-weight="700" fill="#FFFFFF">影</text>
+              <text x="1240" y="468" text-anchor="middle" font-size="22" fill="#1F2420" stroke="#FBF7EE" stroke-width="6" paint-order="stroke">影1号 · 敌</text>
+            </g>
+            <text x="1512" y="846" text-anchor="end" font-size="16" fill="#8A8F84">结构示意 · 非官方地图</text>
+          </svg>
+          <div class="wf-zoom"><span>−</span><span>100%</span><span>＋</span><span>适应</span><span style="border-left:1px solid #D4C9B5;margin-left:2px;padding-left:5px;color:#6B5A2E">局部</span></div>
+        </div>
+        <aside class="wf-panel right">
+          <div class="wf-tabs"><span class="wf-tab active">花名册</span><span class="wf-tab">属性</span><span class="wf-tab">图例</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:8px;color:#7A7468;margin-bottom:4px"><span>我方 18 / 敌方 5</span><span>+ 添加</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot">翊</span><span class="wf-roster-name">翊1号</span><span class="wf-roster-tag">一队</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot" style="background:#8C8F9A;border-color:#6E727C">双</span><span class="wf-roster-name">双剑1号</span><span class="wf-roster-tag">一队</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot" style="background:#3F7D58;border-color:#2F6F6A">霖</span><span class="wf-roster-name">霖1号</span><span class="wf-roster-tag">二队</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot" style="background:#2F6F6A;border-color:#245B57">风</span><span class="wf-roster-name">风1号</span><span class="wf-roster-tag">自由人</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot red">影</span><span class="wf-roster-name">影1号</span><span class="wf-roster-tag">敌方</span></div>
+          <div class="wf-prop">
+            <div class="wf-prop-title">选中 · 翊1号</div>
+            <div class="wf-prop-row"><span>流派</span><span>牵丝·翊</span></div>
+            <div class="wf-prop-row"><span>阵营</span><span>我方</span></div>
+            <div class="wf-prop-row"><span>队伍</span><span>一队</span></div>
+            <div class="wf-prop-row"><span>定位</span><span>输出</span></div>
+            <div class="wf-prop-row"><span>备注</span><span>跟上路偷塔</span></div>
+          </div>
+        </aside>
+      </div>
+      <div class="wf-status"><span>对象 26 · 人物 23 · 标点 14 · 路线 3</span><span>100% · 已保存 14:32</span></div>
+    </div>
+  </div>
+  <div class="wire-caption">线框 B：编辑器。左侧是模板与图层，中间是地图与工具，右侧是花名册/属性；底部状态栏持续显示保存状态。</div>
+  <ol class="annotations">
+    <li><strong>顶部栏：</strong>模板名可直接点击改名；“已保存”是状态而不是按钮；导出是终点动作，放在最右。</li>
+    <li><strong>浮动工具栏：</strong>选择、标点、人物、路线、文字、局部部署。当前工具高亮；放置后保持工具激活，按 Esc 退出，方便连续放点。</li>
+    <li><strong>地图：</strong>我方基地在左、敌方基地在右，上/中/下三条横向通路；每方三座人墙、四片野区、中央上/下首领候选点、玄元教虚线候选位与中场舞台都在底图上有固定语义；人物与标点在其上。</li>
+    <li><strong>人物标记：</strong>实心圆 + 流派简称；外圈颜色表示阵营；下方名字带浅色底衬。选中时加金色光环。</li>
+    <li><strong>花名册：</strong>与地图双向定位；点击行选中并居中地图；眼睛图标控制显隐；顶部显示我方/敌方计数。</li>
+    <li><strong>属性页签：</strong>未选中对象时展示模板信息；选中对象后自动切到属性，可改名称、颜色、大小、状态与备注。</li>
+    <li><strong>视图：</strong>滚轮或双指缩放（25%–400%），空格 + 拖拽平移；工具栏“局部部署”或 Z 框选一块区域后放大，详见线框 B-1。</li>
+  </ol>
+
+  <h4>线框 B-1 · 局部部署视图</h4>
+  <div class="wire">
+    <div class="wf wf-editor">
+      <div class="wf-bar"><span class="wf-dot"></span><span class="wf-dot"></span><span class="wf-dot"></span><span class="wf-url">百业沙盘 / 编辑器 / 局部视图 · 上路</span></div>
+      <div class="wf-editor-top">
+        <span class="wf-btn">← 返回全图</span>
+        <span class="wf-title">三路开局 · 翊1队</span>
+        <span class="wf-viewchip">局部视图 · 上路 · 200%</span>
+        <span style="flex:1"></span>
+        <span class="wf-btn">撤销</span><span class="wf-btn">重做</span><span class="wf-btn">帮助</span><span class="wf-btn primary">导出</span>
+      </div>
+      <div class="wf-editor-main">
+        <aside class="wf-panel">
+          <div class="wf-panel-title">局部部署</div>
+          <div class="wf-field-row"><span>区域</span><span>上路 · 全宽</span></div>
+          <div class="wf-field-row"><span>缩放</span><span>200%</span></div>
+          <div class="wf-field-row"><span>吸附</span><span>8px 网格</span></div>
+          <div class="wf-panel-title" style="margin-top:12px">放置选项</div>
+          <div class="wf-layer"><span class="wf-check on"></span>显示网格</div>
+          <div class="wf-layer"><span class="wf-check on"></span>连续放置</div>
+          <div class="wf-layer"><span class="wf-check"></span>对象等距对齐（P1）</div>
+          <div class="wf-panel-title" style="margin-top:12px">视图说明</div>
+          <div style="font-size:8.5px;color:#7A7468;line-height:1.6">局部视图只影响当前会话，不写入模板与导出文件。返回全图后对象位置不变。</div>
+        </aside>
+        <div class="wf-canvas">
+          <svg class="map-svg" viewBox="440 100 800 560" role="img" aria-label="局部部署视图：上路区域放大至 200%">
+            <defs>
+              <pattern id="wf-grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M40 0 H0 V40" fill="none" stroke="#D8D0BF" stroke-width="1"></path>
+              </pattern>
+              <marker id="wf-arrow-local" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 z" fill="#B23A2E"></path>
+              </marker>
+            </defs>
+            <use href="#baizhan-map-art"></use>
+            <rect x="440" y="100" width="800" height="560" fill="url(#wf-grid)" opacity="0.5"></rect>
+            <path d="M 520 500 C 640 450 700 350 780 310 L 1040 250" fill="none" stroke="#B23A2E" stroke-width="7" stroke-dasharray="16 12" marker-end="url(#wf-arrow-local)"></path>
+            <circle cx="950" cy="200" r="20" fill="#B23A2E" stroke="#FBF7EE" stroke-width="3"></circle>
+            <text x="950" y="207" text-anchor="middle" font-size="15" font-weight="700" fill="#FFFFFF">集</text>
+            <text x="950" y="238" text-anchor="middle" font-size="16" fill="#B23A2E" stroke="#FBF7EE" stroke-width="4" paint-order="stroke">集合</text>
+            <g>
+              <circle cx="600" cy="330" r="24" fill="#3F7D58" stroke="#2F6F6A" stroke-width="3"></circle>
+              <text x="600" y="337" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">翊</text>
+              <text x="600" y="370" text-anchor="middle" font-size="16" fill="#1F2420" stroke="#FBF7EE" stroke-width="5" paint-order="stroke">翊1号</text>
+              <rect x="572" y="302" width="56" height="56" rx="6" fill="none" stroke="#B08A45" stroke-width="2" stroke-dasharray="5 4"></rect>
+              <circle cx="560" cy="400" r="24" fill="#8C8F9A" stroke="#6E727C" stroke-width="3"></circle>
+              <text x="560" y="406" text-anchor="middle" font-size="11" font-weight="700" fill="#FFFFFF">双剑</text>
+              <text x="560" y="440" text-anchor="middle" font-size="16" fill="#1F2420" stroke="#FBF7EE" stroke-width="5" paint-order="stroke">双剑1号</text>
+              <circle cx="660" cy="255" r="24" fill="#2F6F6A" stroke="#245B57" stroke-width="3"></circle>
+              <text x="660" y="262" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">风</text>
+              <text x="660" y="295" text-anchor="middle" font-size="16" fill="#1F2420" stroke="#FBF7EE" stroke-width="5" paint-order="stroke">风1号</text>
+              <circle cx="1200" cy="420" r="24" fill="#C05A4E" stroke="#B23A2E" stroke-width="3"></circle>
+              <text x="1200" y="427" text-anchor="middle" font-size="14" font-weight="700" fill="#FFFFFF">影</text>
+              <text x="1200" y="460" text-anchor="middle" font-size="16" fill="#1F2420" stroke="#FBF7EE" stroke-width="5" paint-order="stroke">影1号 · 敌</text>
+            </g>
+            <text x="1512" y="846" text-anchor="end" font-size="14" fill="#8A8F84">结构示意 · 非官方地图</text>
+          </svg>
+          <div class="wf-zoom"><span>−</span><span>200%</span><span>＋</span><span>适应</span><span style="border-left:1px solid #D4C9B5;margin-left:2px;padding-left:5px;color:#6B5A2E">返回全图</span></div>
+        </div>
+        <aside class="wf-panel right">
+          <div class="wf-tabs"><span class="wf-tab active">花名册</span><span class="wf-tab">属性</span><span class="wf-tab">图例</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:8px;color:#7A7468;margin-bottom:4px"><span>上路小组 6 / 30</span><span>+ 添加</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot">翊</span><span class="wf-roster-name">翊1号</span><span class="wf-roster-tag">上路</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot" style="background:#8C8F9A;border-color:#6E727C">双</span><span class="wf-roster-name">双剑1号</span><span class="wf-roster-tag">上路</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot" style="background:#2F6F6A;border-color:#245B57">风</span><span class="wf-roster-name">风1号</span><span class="wf-roster-tag">自由人</span></div>
+          <div class="wf-roster-row"><span class="wf-roster-dot red">影</span><span class="wf-roster-name">影1号</span><span class="wf-roster-tag">敌方</span></div>
+          <div class="wf-prop">
+            <div class="wf-prop-title">局部部署 · 上路</div>
+            <div class="wf-prop-row"><span>已放人物</span><span>6</span></div>
+            <div class="wf-prop-row"><span>网格吸附</span><span>8px</span></div>
+            <div class="wf-prop-row"><span>返回方式</span><span>0 / 返回全图</span></div>
+          </div>
+        </aside>
+      </div>
+      <div class="wf-status"><span>局部视图 · 上路 · 吸附 8px · 对象 26</span><span>200% · 已保存 14:35</span></div>
+    </div>
+  </div>
+  <div class="wire-caption">线框 B-1：局部部署。框选上路后视图放大到 200%，左右面板保留；人物与标点可连续放置，点“返回全图”回到完整战场。</div>
+  <ol class="annotations">
+    <li><strong>进入：</strong>按 Z 或点工具栏“局部部署”，在地图上拖出矩形；松开后视图缩放到该区域并居中，最高 400%。</li>
+    <li><strong>返回：</strong>顶部显示“局部视图 · 上路 · 200%”，随时可点“返回全图”或按 0；缩放、平移、局部视图都只属于会话，不写入模板。</li>
+    <li><strong>连续放置：</strong>放置人物/标点后工具保持激活，可连续落点；对象在屏幕上的视觉大小保持 24–40px，不随底图放大。</li>
+    <li><strong>吸附：</strong>默认 8px 网格，可切换 16px 或关闭；吸附只影响交互落点，保存坐标仍是 0–1 归一化并保留 4 位小数。</li>
+  </ol>
+
+<h4>线框 C · 添加流派人物</h4>
+  <div class="wire">
+    <div class="wf-modal">
+      <div class="wf-modal-head"><span>添加流派人物</span><span style="color:#8A8F84">×</span></div>
+      <div class="wf-modal-body">
+        <div class="wf-panel-title">选择流派（可改简称与颜色）</div>
+        <div class="school-grid">
+          <div class="school active"><b>翊</b><small>牵丝·翊</small></div>
+          <div class="school"><b>霖</b><small>牵丝·霖</small></div>
+          <div class="school"><b>玉</b><small>牵丝·玉</small></div>
+          <div class="school"><b>风</b><small>破竹·风</small></div>
+          <div class="school"><b>鸢</b><small>破竹·鸢</small></div>
+          <div class="school"><b>钧</b><small>裂石·钧</small></div>
+          <div class="school"><b>威</b><small>裂石·威</small></div>
+          <div class="school"><b>虹</b><small>鸣金·虹</small></div>
+          <div class="school"><b>影</b><small>鸣金·影</small></div>
+          <div class="school"><b>霆</b><small>鸣金·霆</small></div>
+          <div class="school"><b>双剑</b><small>玩家俗称</small></div>
+          <div class="school"><b>自定</b><small>自定义</small></div>
+        </div>
+        <div class="wf-form-row"><span style="width:52px">数量</span><div class="wf-input" style="max-width:60px">2</div><span style="color:#8A8F84">1–10 个，自动编号</span></div>
+        <div class="wf-form-row"><span style="width:52px">命名</span><div class="wf-input">{简称}{序号}号</div><span style="color:#8A8F84">例：翊1号、翊2号</span></div>
+        <div class="wf-form-row"><span style="width:52px">阵营</span><div class="wf-input">我方</div><span style="width:52px">队伍</span><div class="wf-input">一队</div></div>
+        <div class="wf-form-row"><span style="width:52px">定位</span><div class="wf-input">输出</div><span style="color:#8A8F84">可稍后在属性面板修改</span></div>
+        <div class="wf-preview">
+          <div class="token selected"><div class="dot">翊</div><div class="name">翊1号</div></div>
+          <div class="token"><div class="dot">翊</div><div class="name">翊2号</div></div>
+          <div class="token enemy"><div class="dot">影</div><div class="name">影1号 · 敌</div></div>
+          <span style="font-size:9px;color:#7A7468">预览：将添加到地图中心，自动错开位置</span>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:12px"><span class="wf-btn">取消</span><span class="wf-btn primary">添加到地图</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="wire-caption">线框 C：添加人物。先选流派，再一次加多个同流派人物；命名规则可改，避免 30 人逐个输入。</div>
+  <ol class="annotations">
+    <li><strong>流派网格：</strong>预设覆盖当前常见流派与“双剑”俗称；最后一项“自定”用于版本新增或队伍内部叫法。</li>
+    <li><strong>数量与编号：</strong>默认按“{简称}{序号}号”续号，例如已有翊1号时新增翊2号；手动改名后不再自动覆盖。</li>
+    <li><strong>阵营与队伍：</strong>决定外圈颜色与花名册分组；敌方人物用于复盘图，不参与我方人数统计。</li>
+    <li><strong>预览：</strong>添加前看到实际标记样式；添加后自动落在地图中心附近并错开，防止完全重叠。</li>
+  </ol>
+
+  <h4>线框 D · 导入预览</h4>
+  <div class="wire">
+    <div class="wf-modal">
+      <div class="wf-modal-head"><span>导入战术模板</span><span style="color:#8A8F84">×</span></div>
+      <div class="wf-modal-body">
+        <div style="border:1px dashed #BDB3A0;border-radius:8px;padding:18px;text-align:center;background:#F8F3E9">
+          <div style="font-size:11px;font-weight:600;color:#4E554C">拖入 .json 模板文件，或点击选择</div>
+          <div style="font-size:9px;color:#8A8F84;margin-top:4px">单个文件不超过 5 MB；仅支持本工具导出的 JSON</div>
+        </div>
+        <div style="margin-top:12px">
+          <div class="wf-field-row"><span>文件</span><span>百业战战术_三路开局_20261122.json</span></div>
+          <div class="wf-field-row"><span>模板名</span><span>三路开局 · 翊1队</span></div>
+          <div class="wf-field-row"><span>内容</span><span>18 人 · 14 标点 · 3 路线</span></div>
+          <div class="wf-field-row"><span>版本</span><span>schemaVersion 1 · 校验通过</span></div>
+        </div>
+        <div style="margin-top:10px;font-size:10px;color:#4E554C">
+          <div style="margin-bottom:5px"><strong>导入方式</strong></div>
+          <div style="display:flex;gap:16px;align-items:center;font-size:9.5px">
+            <span><span style="display:inline-block;width:8px;height:8px;border:1px solid #2F6F6A;border-radius:50%;background:#2F6F6A;margin-right:4px"></span>作为新模板导入</span>
+            <span><span style="display:inline-block;width:8px;height:8px;border:1px solid #9C9382;border-radius:50%;background:#FBF7EE;margin-right:4px"></span>覆盖现有模板</span>
+            <span class="wf-input" style="max-width:120px">选择目标模板…</span>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;gap:6px;margin-top:14px"><span class="wf-btn">取消</span><span class="wf-btn primary">确认导入</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="wire-caption">线框 D：导入预览。先校验、再预览、最后选择“新建或覆盖”；覆盖必须二次确认。</div>
+  <ol class="annotations">
+    <li><strong>文件选择：</strong>支持拖拽与文件选择；只接受 .json，大小上限 5 MB。</li>
+    <li><strong>校验摘要：</strong>显示模板名、人数、标点数、路线数与 schemaVersion；任何必填字段缺失都阻止导入。</li>
+    <li><strong>冲突处理：</strong>默认“作为新模板导入”；选择覆盖时必须指定目标模板，并显示“将替换目标内容”的确认。</li>
+    <li><strong>错误状态：</strong>校验失败时，在文件区下方列出前三条具体错误（如“第 3 个人物缺少名称”），不进行部分导入。</li>
+  </ol>
+
+  <h3>6.7 组件规范</h3>
+  <h4>标点样式</h4>
+  <div class="marker-legend">
+    <div class="marker"><div class="pin"><span>攻</span></div><div class="label">进攻 / 敌方</div></div>
+    <div class="marker teal"><div class="pin"><span>守</span></div><div class="label">防守 / 我方</div></div>
+    <div class="marker gold"><div class="pin"><span>墙</span></div><div class="label">人墙 / 目标</div></div>
+    <div class="marker gray"><div class="pin"><span>据</span></div><div class="label">中立 / 据点</div></div>
+    <div class="marker teal"><div class="pin"><span>集</span></div><div class="label">集合</div></div>
+    <div class="marker"><div class="pin"><span>危</span></div><div class="label">危险 / 撤退</div></div>
+  </div>
+  <p class="small">标点为“水滴形定位针 + 2 字简称 + 可选文字标签”。状态通过右下角小徽标或虚线边框表达：已摧毁的人墙变灰并加 ×，已击杀的大鹅降低饱和度，已送达的发财树加勾。</p>
+
+  <h4>人物标记状态</h4>
+  <div class="marker-legend">
+    <div class="token"><div class="dot">翊</div><div class="name">翊1号</div></div>
+    <div class="token selected"><div class="dot">翊</div><div class="name">翊1号 · 选中</div></div>
+    <div class="token enemy"><div class="dot">影</div><div class="name">影1号 · 敌方</div></div>
+    <div class="token neutral"><div class="dot">?</div><div class="name">未知 · 中立</div></div>
+  </div>
+  <table>
+    <thead><tr><th style="width:16%">元素</th><th>规则</th></tr></thead>
+    <tbody>
+      <tr><td>填充色</td><td>默认取流派色；同一流派同色，便于快速识别。用户可在属性面板改色。</td></tr>
+      <tr><td>外圈</td><td>我方青色、敌方朱砂、中立灰色；与填充色独立，保证阵营先于流派被识别。</td></tr>
+      <tr><td>简称</td><td>1–2 个汉字；双剑等两字简称使用更小字号。简称可改，但建议不超过 2 字。</td></tr>
+      <tr><td>名字标签</td><td>默认显示在地图标记下方，带半透明浅色底衬；缩放小于 70% 时可自动隐藏，仅保留简称。</td></tr>
+      <tr><td>选中态</td><td>金色外发光 + 尺寸放大 1.1 倍；右侧属性面板同步显示该人物。</td></tr>
+    </tbody>
+  </table>
+
+  <h4>按钮与反馈</h4>
+  <table>
+    <thead><tr><th style="width:16%">组件</th><th>规范</th></tr></thead>
+    <tbody>
+      <tr><td>主按钮</td><td>青底白字，用于“新建战术 / 保存 / 导出 / 确认导入”；同屏只出现一个主按钮。</td></tr>
+      <tr><td>次按钮</td><td>纸色底 + 墨色描边，用于“取消 / 帮助 / 撤销 / 重做”。</td></tr>
+      <tr><td>危险按钮</td><td>朱砂描边或朱砂底，仅用于删除模板、删除分类、覆盖导入；必须配合确认弹窗。</td></tr>
+      <tr><td>Toast</td><td>底部居中，3 秒自动消失；文案如“已复制模板”“已导出”“已撤销”。</td></tr>
+      <tr><td>持久横幅</td><td>用于存储失败、版本不兼容等需要用户处理的问题；提供“重试 / 导出备份”动作，不自动消失。</td></tr>
+      <tr><td>确认弹窗</td><td>标题 + 影响说明 + 取消/确认；删除模板时显示模板名与对象数，覆盖导入时显示双方模板名。</td></tr>
+    </tbody>
+  </table>
+
+  <h3>6.8 交互与可访问性</h3>
+  <ul>
+    <li><strong>悬停：</strong>工具按钮显示名称提示；地图对象悬停显示名称与备注摘要；不改变布局。</li>
+    <li><strong>选中：</strong>单击对象选中；单击空白取消；Esc 取消当前工具或选择；拖拽时显示半透明预览与坐标提示。</li>
+    <li><strong>禁用：</strong>撤销/重做在无可撤销步骤时置灰；导出在保存失败时仍可用，但提示“先导出备份”。</li>
+    <li><strong>键盘：</strong>所有按钮可 Tab 聚焦，焦点有金色描边；地图对象支持 Tab 遍历花名册替代操作；删除键删除选中对象。</li>
+    <li><strong>对比度：</strong>正文与背景对比度不低于 4.5:1；地图文字必须带底衬或描边，不直接压在复杂底图上。</li>
+    <li><strong>非颜色编码：</strong>敌我同时用外圈颜色 + 标签“敌/我”或图标形状区分；状态同时用徽标/文字。</li>
+    <li><strong>动效：</strong>只使用 120–200ms 的淡入/位移；尊重系统“减少动态效果”设置。</li>
+  </ul>
+
+
+</section>
+<section id="s7">
+  <h2><span class="sec-num">07</span>功能需求</h2>
+  <p class="lead">功能需求按模块组织。每个模块说明“目的、入口、规则、结果、异常”，规则只写产品行为，不规定技术实现。跨模块共用的字段长度、删除确认、保存状态等统一放在第 08 节。</p>
+
+  <h3>FR-01 模板库与分类 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>让用户在几秒内找到上一场的战术，或从某个分类开始做新图；分类是战术整理的主要手段。</p>
+  <h4>入口与布局</h4>
+  <ul>
+    <li>打开产品即进入模板库；顶部为搜索、帮助、导入、新建；左侧为分类栏；右侧为模板卡片网格。</li>
+    <li>默认展示“全部模板”，按最近更新倒序；分类栏显示每个分类的模板数量。</li>
+  </ul>
+  <h4>规则</h4>
+  <table>
+    <thead><tr><th style="width:20%">规则项</th><th>行为</th></tr></thead>
+    <tbody>
+      <tr><td>预设分类</td><td>开局布防、进攻偷塔、资源争夺、中场演出、终局搬树、赛后复盘、未分类。前六类为业务分类，“未分类”为系统兜底分类。</td></tr>
+      <tr><td>全部模板</td><td>是一个视图，不是可编辑分类；不能重命名或删除。</td></tr>
+      <tr><td>新建分类</td><td>用户输入名称，1–12 个字符；去除首尾空格；不允许与现有分类重名（忽略大小写）；不允许使用“全部模板”“全部”“未分类”等保留名。</td></tr>
+      <tr><td>重命名分类</td><td>直接更新该分类下所有模板的分类显示；不改变模板内容与更新时间。</td></tr>
+      <tr><td>删除分类</td><td>二次确认；该分类下模板全部移入“未分类”，模板本身不删除；“未分类”不可删除。</td></tr>
+      <tr><td>搜索</td><td>匹配模板名称、描述、标签、人物名称；忽略大小写与首尾空格；与当前分类筛选叠加。</td></tr>
+      <tr><td>排序</td><td>最近更新（默认）、名称升序、创建时间倒序。排序选择在当前会话内保留。</td></tr>
+      <tr><td>卡片信息</td><td>缩略图、模板名、分类、地图名、人物数、更新时间；悬停显示“打开、复制、导出、删除”快捷操作。</td></tr>
+    </tbody>
+  </table>
+  <h4>结果与状态</h4>
+  <ul>
+    <li>新建/导入成功后，卡片出现在对应分类顶部，并显示 Toast“已创建/已导入”。</li>
+    <li>无模板：显示“新建空白模板”“导入模板文件”两个入口，不显示空网格。</li>
+    <li>搜索无结果：显示关键词与“清除筛选”，保留分类栏。</li>
+    <li>分类为空：显示“该分类还没有模板，可从其他分类移动或新建”。</li>
+  </ul>
+  <h4>异常与边界</h4>
+  <ul>
+    <li>本地数据读取失败：显示“无法读取本地模板”，提供“重试”和“导入备份文件”；不得静默清空数据。</li>
+    <li>分类名为空或超长：阻止提交并在字段下提示。</li>
+    <li>删除分类时没有模板：仍确认一次，避免误触。</li>
+  </ul>
+
+  <h3>FR-02 模板的新建、改名、复制与删除 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>用最低成本完成“从空白开始”和“在旧图上改一版”两件事，避免每场从零画。</p>
+  <h4>新建</h4>
+  <ul>
+    <li>点击“新建战术”打开弹窗：模板名（必填，1–40 字）、分类（必填，默认当前分类或“未分类”）、地图（P0 只有“百业战 · 三路示意”）、描述（可选，0–200 字）、标签（可选，最多 5 个，每个 1–10 字）。</li>
+    <li>创建后生成空白模板并进入编辑器；地图底图锁定，其他图层为空。编辑器显示一次轻量引导：“先放一个集合点，或从右上角添加人物”。</li>
+    <li>名称为空、仅空格或超长时阻止创建；分类无效时回退到“未分类”。</li>
+  </ul>
+  <h4>改名</h4>
+  <ul>
+    <li>编辑器顶部模板名可直接点击进入编辑；Enter 或失焦保存，Esc 取消。</li>
+    <li>名称去除首尾空格；为空时恢复原名并提示；1–40 字。</li>
+  </ul>
+  <h4>复制</h4>
+  <ul>
+    <li>卡片“复制”或编辑器“另存副本”：深拷贝模板元数据、所有对象、人物、路线、文字与图层显隐；为所有对象生成新 ID。</li>
+    <li>副本命名：原名为“名称”，副本为“名称 副本”；已存在同名副本时追加序号“副本 2”“副本 3”。</li>
+    <li>副本分类与原模板一致，创建/更新时间为当前时间；复制完成后留在模板库并提示，不自动打开。</li>
+  </ul>
+  <h4>删除</h4>
+  <ul>
+    <li>卡片“删除”打开确认弹窗，显示模板名、人物数、标点数，并说明“删除后无法恢复，建议先导出备份”。</li>
+    <li>P0 删除为永久删除；确认后返回模板库并提示。后续版本再评估“最近删除/回收站”。</li>
+  </ul>
+  <h4>状态与异常</h4>
+  <ul>
+    <li>模板名允许重复；列表依靠分类、更新时间与缩略图区分，不强制改名。</li>
+    <li>创建/复制时若本地存储写入失败：保留内存中的草稿，提示“尚未保存”，并提供导出；不得显示为已保存。</li>
+  </ul>
+
+  <h3>FR-03 地图画布与视图 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>提供一张稳定、可缩放、可平移、可框选放大的战术底板，让所有对象在同一坐标系下被放置和理解；局部部署用于在密集区域精细摆位。</p>
+  <h4>底图内容</h4>
+  <table>
+    <thead><tr><th style="width:20%">元素</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>双方基地</td><td>我方基地在左、敌方基地在右；各含复活点、大鹅与发财树，基地大门朝向中路。基地名称固定显示。</td></tr>
+      <tr><td>三路</td><td>上、中、下三条横向通路连接左右基地；用不同明度的纸色带表达，不画成写实道路。</td></tr>
+      <tr><td>人墙</td><td>每方三座，分别位于上/中/下路；我方三座在左半区，敌方三座在右半区。底图只画位置框，具体状态由标点表达，避免底图与标点重复。</td></tr>
+      <tr><td>中立野区</td><td>四片，夹在上路—中路、中路—下路之间，左右各两片；用淡绿色区域表示。</td></tr>
+      <tr><td>中立首领</td><td>张豹、朱邪骨勒在地图中央的上/下两个候选点随机刷新（上下随机）；底图画两个候选点并标注“上下随机”，不画死一个点。</td></tr>
+      <tr><td>玄元教据点</td><td>上、下路各一处，开局 3 分钟刷新；官方未给出精确坐标，底图用虚线候选位标注“位置待实测”，具体点位以游戏内为准。</td></tr>
+      <tr><td>中场演出</td><td>地图正中央的舞台；用金色虚线框标注“中场演出”，不占死一个标点。</td></tr>
+      <tr><td>非官方说明</td><td>地图右下角常驻“结构示意 · 非官方地图 · 按公开截图重绘”水印；底图不嵌入官方截图或美术。</td></tr>
+    </tbody>
+  </table>
+  <div class="note">
+    底图版本为 <code>baizhan_schematic_v2</code>。布局关系来自公开实机截图<a href="#ref2">[2]</a>；玄元教据点为 2026-05-27 更新加入上、下路<a href="#ref4">[4]</a>，精确点位未核实，需在模板中用“据点”标点记录。
+  </div>
+  <h4>缩放与平移</h4>
+  <ul>
+    <li>缩放范围 25%–400%；按钮“− / 当前百分比 / + / 适应窗口”；滚轮以鼠标位置为中心缩放，触控板支持双指捏合。</li>
+    <li>快捷键 <code>+</code> / <code>−</code> 缩放，<code>0</code> 适应窗口；处于局部视图时，<code>0</code> 等价于“返回全图”。</li>
+    <li>平移：空格 + 拖拽、鼠标中键拖拽、或选择“抓手”工具；平移不改变对象坐标。</li>
+    <li>“适应窗口”在进入编辑器时执行一次；之后用户手动缩放不自动重置。</li>
+    <li>坐标以地图宽高的百分比保存（0–1），保证不同屏幕/缩放级别下对象位置一致。</li>
+  </ul>
+  <h4>局部部署</h4>
+  <ul>
+    <li><strong>进入：</strong>按 <code>Z</code> 或点工具栏“局部部署”，在地图上拖出矩形；松开后视图以该区域为目标自动缩放并居中，最高 400%。矩形小于 24×24 CSS 像素时视为误触，忽略并提示“选区太小，请重新框选”。</li>
+    <li><strong>边界：</strong>选区超出地图边界时钳制到地图范围；完全落在底图留白区时忽略。地图外围的纸色留白不参与框选。</li>
+    <li><strong>视图状态：</strong>顶部显示“局部视图 · 上路 · 200%”面包屑与“返回全图”；局部视图内仍可用滚轮/抓手继续调整，但不会自动回到全图。</li>
+    <li><strong>连续放置：</strong>标点/人物工具在局部视图中保持激活，可连续落点；新对象默认落在当前可见区域中心并自动错开，不会落到视口外。</li>
+    <li><strong>吸附：</strong>默认 8px 网格吸附，可切换 16px 或关闭；吸附只影响拖拽/放置的交互落点，保存坐标仍是 0–1 归一化并保留 4 位小数。</li>
+    <li><strong>对象尺寸：</strong>人物与标点在屏幕上的视觉尺寸保持 24–40px，不随底图无限放大；路线线宽设屏幕像素上下限，避免 400% 时遮住底图。</li>
+    <li><strong>不改坐标：</strong>进入/退出局部视图、缩放、平移都不改变对象坐标；返回全图后位置与进入前一致。</li>
+    <li><strong>不写入模板：</strong>缩放、平移、局部视图属于会话状态，不写入 JSON、不进入撤销栈、不跨刷新保留；导出图片时可选“当前视图/全图”（P1）。</li>
+    <li><strong>范围边界：</strong>P0 的局部部署只解决“看得清、放得准”；框选多个对象、批量移动、对齐与等距分布仍为 P1。</li>
+  </ul>
+  <h4>图层</h4>
+  <table>
+    <thead><tr><th style="width:20%">图层</th><th>内容</th><th>P0 行为</th></tr></thead>
+    <tbody>
+      <tr><td>底图</td><td>地图结构、地名、水印</td><td>锁定，不可编辑、不可隐藏</td></tr>
+      <tr><td>标点</td><td>所有地图标点</td><td>可显示/隐藏；隐藏不删除</td></tr>
+      <tr><td>人物</td><td>所有流派人物标记</td><td>可显示/隐藏；隐藏不影响花名册</td></tr>
+      <tr><td>路线与文字</td><td>折线箭头、文字标签、P1 区域</td><td>可显示/隐藏</td></tr>
+    </tbody>
+  </table>
+  <p class="small">图层显隐状态随模板保存并随导出文件传递；接收方导入后看到与导出方一致的图层状态，仍可自行切换。</p>
+  <h4>异常与边界</h4>
+  <ul>
+    <li>窗口宽度低于 1280px：左右面板可折叠为窄条，工具栏保持可见；低于 1024px 显示“建议桌面端编辑”的提示，地图只读。</li>
+    <li>缩放至极值时按钮置灰；局部选区过小或完全落在留白区时忽略并提示；拖拽到地图边界时对象仍被限制在地图内，不产生负坐标或超出 1 的坐标。</li>
+    <li>从局部视图返回全图后，视口外的对象不会自动移动，只调整视图；对象数据不变。</li>
+    <li>底图加载失败（资源缺失）：显示纯色底板与“地图加载失败，请刷新”的提示，已保存对象不丢失。</li>
+  </ul>
+
+  <h3>FR-04 地图标点 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>把“去哪、做什么、什么时候做”变成地图上的可视对象；标点是战术图的主要语言。</p>
+  <h4>标点类型</h4>
+  <table>
+    <thead><tr><th style="width:16%">类型</th><th style="width:12%">默认简称</th><th style="width:30%">可选状态</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>集合 / 集火</td><td>集</td><td>无</td><td>赛前集合、临时集火点</td></tr>
+      <tr><td>进攻</td><td>攻</td><td>无</td><td>进攻方向、压上点</td></tr>
+      <tr><td>防守</td><td>守</td><td>无</td><td>守塔、守据点、护树</td></tr>
+      <tr><td>侦察 / 视野</td><td>眼</td><td>无</td><td>需要看视野的位置</td></tr>
+      <tr><td>危险 / 撤退</td><td>危</td><td>无</td><td>敌方埋伏、撤退路线提示</td></tr>
+      <tr><td>人墙</td><td>墙</td><td>完好 / 受损 / 已摧毁</td><td>三座人墙的目标与阶段状态</td></tr>
+      <tr><td>大鹅</td><td>鹅</td><td>存活 / 已击杀</td><td>击杀大鹅是搬树前提</td></tr>
+      <tr><td>发财树</td><td>树</td><td>未出现 / 可搬运 / 搬运中 / 已送达</td><td>终局目标与搬运路线端点</td></tr>
+      <tr><td>中立首领</td><td>兽</td><td>未刷新 / 争夺中 / 已击杀</td><td>张豹、朱邪骨勒；备注写名字与预计时间</td></tr>
+      <tr><td>玄元教据点</td><td>据</td><td>中立 / 我方 / 敌方</td><td>复活点与转线节点</td></tr>
+      <tr><td>中场演出</td><td>演</td><td>未开始 / 进行中 / 已结束</td><td>中场事件与人选提示</td></tr>
+      <tr><td>复活点</td><td>复</td><td>无</td><td>基地复活点、据点复活点</td></tr>
+      <tr><td>指挥技能</td><td>令</td><td>无</td><td>备注技能名称与释放时机</td></tr>
+      <tr><td>自定义</td><td>点</td><td>无</td><td>其他需要说明的位置</td></tr>
+    </tbody>
+  </table>
+  <h4>放置与编辑</h4>
+  <ul>
+    <li>选择“标点”工具 → 在工具栏选择类型 → 点击地图放置；放置后工具保持激活，可连续放点；按 Esc 或选择其他工具退出。</li>
+    <li>新标点默认落在点击位置，默认标签为类型名；自动选中并打开右侧属性面板，可立即改名。</li>
+    <li>拖拽移动；拖动时显示十字参考线与名称；松开后保存坐标。</li>
+    <li>属性可改：名称（0–20 字）、颜色（默认色 + 6 个备选）、大小（小 24 / 中 32 / 大 40）、状态（按类型）、备注（0–100 字）。</li>
+    <li>删除键删除选中标点；Ctrl+D 复制一个偏移 16px 的副本；均可撤销。</li>
+  </ul>
+  <h4>显示规则</h4>
+  <ul>
+    <li>标点按创建顺序叠放，选中的标点临时置顶；P0 不提供手动层级调整。</li>
+    <li>名称显示在图标下方，带浅色底衬；缩放到 70% 以下时可只显示简称，悬停显示全名。</li>
+    <li>状态通过右下角徽标/虚线边框/灰度表达，并在属性面板以文字写明；不能只靠颜色区分。</li>
+  </ul>
+  <h4>异常与边界</h4>
+  <ul>
+    <li>点击超出地图边界时不创建对象；拖拽出界时坐标钳制在地图内。</li>
+    <li>标点名称允许重复；重叠时后创建的在上，选中对象始终可见；用户可通过拖拽分开。</li>
+    <li>单模板对象总数上限 200 个（含标点、人物、路线、文字）；达到上限时阻止新增并提示删除或拆分模板。</li>
+  </ul>
+<h3>FR-05 流派人物与花名册 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>把“谁、用什么流派、在哪、跟谁一队”同时放到地图和名单里；人物标记要能承载 30v30 的规模，而不是只做几个装饰点。</p>
+  <h4>添加入口</h4>
+  <ul>
+    <li>工具栏“人物”或右侧花名册“+ 添加”打开“添加流派人物”弹窗。</li>
+    <li>弹窗内选择流派（预设网格 + 自定义）、数量（1–10）、命名规则、阵营、队伍、定位；预览后添加到地图。</li>
+    <li>添加后人物落在地图中心附近，自动错开位置并选中第一个；花名册同步新增。</li>
+  </ul>
+  <h4>人物字段</h4>
+  <table>
+    <thead><tr><th style="width:16%">字段</th><th style="width:20%">规则</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>名称</td><td>必填，1–12 字</td><td>默认“{简称}{序号}号”，如翊1号、双剑1号；可直接改</td></tr>
+      <tr><td>流派</td><td>预设或自定义</td><td>预设见第 02 节；自定义需填写简称（1–2 字）</td></tr>
+      <tr><td>简称</td><td>1–2 字</td><td>显示在圆形标记内；默认取流派简称</td></tr>
+      <tr><td>阵营</td><td>我方 / 敌方 / 中立</td><td>默认我方；决定外圈颜色与人数统计</td></tr>
+      <tr><td>队伍</td><td>一队 / 二队 / 三队 / 自由人</td><td>默认一队；用于花名册分组与筛选</td></tr>
+      <tr><td>定位</td><td>输出 / 治疗 / 前排 / 侦察 / 指挥 / 自由人</td><td>默认输出；可标记“指挥”“中场人选”等职责</td></tr>
+      <tr><td>颜色</td><td>默认流派色 + 6 个备选</td><td>用户改色后不再随流派变化</td></tr>
+      <tr><td>备注</td><td>0–50 字</td><td>如“跟上路偷塔”“中场人选”</td></tr>
+    </tbody>
+  </table>
+  <h4>命名与批量规则</h4>
+  <ul>
+    <li>默认命名规则为“{简称}{序号}号”；同流派已有翊1号时，新增从翊2号开始续号。</li>
+    <li>用户手动改过名称后，该人物不再参与自动续号；批量添加仍按当前最大序号续号。</li>
+    <li>允许同名，但同一阵营出现同名时，属性面板显示非阻塞提示“同名人物”，不阻止保存。</li>
+    <li>批量添加超过上限（单模板 60 人）时，只添加到上限并提示“已达人物上限”。</li>
+  </ul>
+  <h4>花名册</h4>
+  <ul>
+    <li>右侧面板默认显示花名册；顶部显示“我方 N / 敌方 M / 中立 K”，并提供搜索与“队伍/阵营”筛选。</li>
+    <li>每行显示：流派色点与简称、名称、队伍/阵营标签、显隐眼睛、定位。点击行选中并居中地图；再次点击不取消。</li>
+    <li>眼睛图标控制该人物在地图上的显隐；隐藏不影响导出？<strong>影响</strong>：显隐状态随模板保存并导出，接收方看到相同状态。</li>
+    <li>从花名册选中一个被隐藏的人物时，自动打开“人物”图层并显示该人物，同时 Toast“已显示该人物”。</li>
+    <li>删除人物：无二次确认，删除后可撤销；花名册与地图同时移除。</li>
+  </ul>
+  <h4>地图标记规则</h4>
+  <ul>
+    <li>圆形标记直径默认 30px；外圈 2px 表示阵营；内部为 1–2 字简称；下方名字标签带浅色底衬。</li>
+    <li>拖拽移动；多个人物落在同一点时允许重叠，选中的始终在最上；从花名册定位可精确选中。</li>
+    <li>修改流派时：若用户未手动改过简称/颜色，则同步更新简称与颜色；若已改过，只更新流派字段，不覆盖用户选择。</li>
+    <li>修改阵营时：外圈颜色立即更新；填充色不变，除非用户选择“跟随阵营”。</li>
+  </ul>
+  <h4>异常与边界</h4>
+  <ul>
+    <li>花名册为空：显示“还没有人物，按流派批量添加”；地图不显示空状态遮挡。</li>
+    <li>自定义流派简称为空：阻止添加并提示；简称超过 2 字时截断为 2 字并提示。</li>
+    <li>删除流派预设（自定义流派管理属于后续版本）不影响已有人物；已有人物保留名称与简称，流派字段标记为“自定义”。</li>
+  </ul>
+
+  <h3>FR-06 路线与文字 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>标点回答“在哪”，路线回答“怎么走”，文字回答“为什么”。三者组合才能让队员看懂一次进攻或一次搬树。</p>
+  <h4>路线类型</h4>
+  <table>
+    <thead><tr><th style="width:16%">类型</th><th style="width:18%">默认样式</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td>进攻路线</td><td>朱砂实线 + 箭头</td><td>偷塔、压上、集火方向</td></tr>
+      <tr><td>防守路线</td><td>青色虚线 + 箭头</td><td>回防、护塔、护树</td></tr>
+      <tr><td>撤退路线</td><td>灰色虚线 + 箭头</td><td>危险区撤离、让路</td></tr>
+      <tr><td>自定义</td><td>用户选择颜色/线型/宽度</td><td>搬树、转线、绕后等</td></tr>
+    </tbody>
+  </table>
+  <h4>创建与编辑</h4>
+  <ul>
+    <li>选择“路线”工具 → 在地图上依次点击折点；双击最后一个点或按 Enter 完成；至少 2 个点，少于 2 个点时按 Esc 取消且不生成对象。</li>
+    <li>完成后自动选中路线，右侧属性可改：名称（0–20 字）、颜色、线型（实线/虚线）、宽度（2/4/6）、是否显示箭头。</li>
+    <li>拖拽折点调整路径；双击折点删除该点（至少保留 2 个点）；P0 不支持在已有线段中插入新点。</li>
+    <li>删除键删除整条路线；Ctrl+D 复制；均可撤销。</li>
+  </ul>
+  <h4>文字标签</h4>
+  <ul>
+    <li>选择“文字”工具 → 点击地图 → 原地输入；Enter 保存，Esc 取消；空内容不生成对象。</li>
+    <li>文字 1–30 字，单行；字号 12/16/20；颜色可选；不支持富文本与换行。</li>
+    <li>文字默认位于最上层，避免被路线或人物遮挡；可拖拽移动。</li>
+  </ul>
+  <h4>层级与显示</h4>
+  <ul>
+    <li>渲染顺序：底图 → 区域（P1）→ 路线 → 标点 → 人物 → 文字。路线不遮挡人物与标点。</li>
+    <li>路线名称显示在路径中点附近，带浅色底衬；缩放小于 70% 时可隐藏名称，仅保留线型。</li>
+    <li>路线/文字随“路线与文字”图层一起显隐；显隐状态随模板保存并导出。</li>
+  </ul>
+  <h4>异常与边界</h4>
+  <ul>
+    <li>路线折点拖到地图外：坐标钳制在地图内。</li>
+    <li>路线名称允许重复；多条路线重叠时按创建顺序绘制，选中的路线临时置顶。</li>
+    <li>文字内容只按纯文本渲染；导入文件中的 HTML/脚本字符必须转义，不能执行。</li>
+  </ul>
+
+  <h3>FR-07 属性面板与图层 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>让用户在不离开地图的情况下修改对象；所有对象类型共享一套“选中—编辑—反馈”模式。</p>
+  <h4>面板结构</h4>
+  <ul>
+    <li>右侧面板三个页签：花名册、属性、图例。默认花名册；选中对象后自动切到属性。</li>
+    <li>属性页在未选中对象时显示“未选中对象”和当前模板摘要（模板名、分类、对象数、地图版本）。</li>
+    <li>选中标点/人物/路线/文字时，显示对应字段；字段分组为“基本信息 / 显示 / 备注”。</li>
+  </ul>
+  <h4>字段与联动</h4>
+  <table>
+    <thead><tr><th style="width:18%">对象</th><th>属性页字段</th></tr></thead>
+    <tbody>
+      <tr><td>标点</td><td>类型（只读）、名称、颜色、大小、状态、备注；位置以坐标只读显示</td></tr>
+      <tr><td>人物</td><td>名称、流派、简称、阵营、队伍、定位、颜色、备注；显隐开关</td></tr>
+      <tr><td>路线</td><td>名称、颜色、线型、宽度、箭头开关、备注</td></tr>
+      <tr><td>文字</td><td>内容、字号、颜色</td></tr>
+    </tbody>
+  </table>
+  <ul>
+    <li>修改字段后立即在地图上生效；停止输入后自动保存。</li>
+    <li>名称/备注类字段在输入过程中允许临时为空，但失焦时若必填为空则恢复上一个有效值并提示。</li>
+    <li>颜色修改只影响当前对象；不提供“全局换色”（后续评估）。</li>
+    <li>图层显隐变化立即生效并保存，但不进入撤销/重做历史；对象内容变化进入撤销/重做历史。</li>
+  </ul>
+  <h4>状态与异常</h4>
+  <ul>
+    <li>选中的对象被删除：属性页回到“未选中对象”，花名册计数更新。</li>
+    <li>隐藏当前对象所在图层：取消选中并提示“已隐藏该图层”；对象数据不删除。</li>
+    <li>撤销/重做后，属性面板同步刷新为当前对象状态；若对象已被撤销掉，则回到未选中状态。</li>
+  </ul>
+<h3>FR-08 本地保存与恢复 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>让用户敢关页面、敢刷新；在不引入账号与服务端的前提下，把“丢了重画”的风险降到最低。</p>
+  <h4>保存规则</h4>
+  <ul>
+    <li>模板内容变化后自动保存到浏览器本地存储；顶部状态依次显示“保存中…”“已保存 HH:mm”“保存失败”。</li>
+    <li>内容变化包括：模板名/分类/描述/标签、对象增删改、人物字段、路线/文字、图层显隐。</li>
+    <li>缩放、平移、局部部署视图、当前选中的对象、右侧页签属于会话状态，不写入模板，不跨刷新保留。</li>
+    <li>保存成功后更新模板的“更新时间”；模板库按该时间排序。</li>
+  </ul>
+  <h4>首次使用与数据说明</h4>
+  <ul>
+    <li>首次进入编辑器时显示一次可关闭的提示：“模板保存在当前浏览器，不会上传；清除浏览器数据会丢失，建议定期导出备份。”</li>
+    <li>帮助抽屉内常驻“数据存储说明”，并解释无痕模式/换浏览器/清缓存的影响。</li>
+  </ul>
+  <h4>刷新与恢复</h4>
+  <ul>
+    <li>刷新页面后，加载最近一次成功保存的模板；若上次保存失败，加载更早的成功版本，并提示“有未保存的更改已丢失”。</li>
+    <li>撤销/重做仅在当前编辑会话内有效，最多 30 步；刷新后清空，不写入本地存储。</li>
+    <li>P0 不提供自动版本历史；用户需要保留旧版时使用“复制”或“导出”。</li>
+  </ul>
+  <h4>保存失败</h4>
+  <div class="warn">
+    <strong>原则：不得把失败显示成成功。</strong>本地存储不可用、配额不足或写入异常时，顶部出现常驻横幅：“保存失败，当前修改仅在本页内存中”，并提供“重试保存”“导出备份”两个动作。用户可以继续编辑，但刷新/关闭页面会丢失未保存内容。
+  </div>
+  <h4>多标签页与版本</h4>
+  <ul>
+    <li>P0 不保证多标签页并发编辑：同一模板在两个标签页打开时，后保存者覆盖先保存者。帮助中明确“建议只在一个标签页编辑同一模板”。</li>
+    <li>导出文件带 schemaVersion；应用读取到更高版本时，提示“文件由更新版本创建，可能无法完整显示”，并允许只读导入或取消。</li>
+    <li>应用升级后读取旧版本数据时，应在本地完成兼容迁移；迁移失败不得删除原数据，提供导出失败数据的入口。</li>
+  </ul>
+
+  <h3>FR-09 导入与导出 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>用文件完成跨设备、跨人的传播；导入必须“先预览、再确认”，不能把坏文件直接塞进模板库。</p>
+  <h4>导出</h4>
+  <ul>
+    <li>编辑器顶部“导出”打开弹窗：显示模板名、分类、人物数、标点数、路线数，输入/确认文件名，点击“下载 JSON”。</li>
+    <li>P0 只导出当前模板；不包含图片、缩略图或浏览器本地设置。文件为 UTF-8 JSON。</li>
+    <li>默认文件名：<code>百业战战术_{模板名}_{YYYYMMDD}.json</code>；清除文件名中的 <code>\ / : * ? " &lt; &gt; |</code> 等非法字符，长度上限 80 字。</li>
+    <li>导出成功后 Toast“已导出”，并提示“可通过群聊发送该文件”。</li>
+  </ul>
+  <h4>导入入口与预览</h4>
+  <ul>
+    <li>模板库顶部“导入”打开导入弹窗；支持拖拽文件到弹窗或点击选择。</li>
+    <li>选择文件后先解析并显示：文件名、模板名、人物数、标点数、路线数、更新时间、schemaVersion、校验结果。</li>
+    <li>导入方式默认“作为新模板导入”；也可选择“覆盖现有模板”并指定目标模板。</li>
+    <li>点击“确认导入”后才写入本地；成功后 Toast“已导入”，并打开新模板或留在模板库（由用户在弹窗中选择，默认打开）。</li>
+  </ul>
+  <h4>校验规则</h4>
+  <table>
+    <thead><tr><th style="width:22%">检查项</th><th>不通过时的处理</th></tr></thead>
+    <tbody>
+      <tr><td>文件类型与大小</td><td>仅接受 .json；超过 5 MB 拒绝，提示“文件过大”。</td></tr>
+      <tr><td>JSON 可解析</td><td>解析失败提示“文件不是有效的 JSON”，不写入任何数据。</td></tr>
+      <tr><td>格式标识</td><td>必须为 <code>yysls-baizhan-tactic</code>；否则提示“不是本工具的模板文件”。</td></tr>
+      <tr><td>schemaVersion</td><td>高于当前支持版本时提示可能不兼容，允许取消或只读导入；低于当前版本时尝试迁移。</td></tr>
+      <tr><td>必填字段</td><td>模板名、分类、mapId、对象数组必须存在；缺失时列出具体字段，不部分导入。</td></tr>
+      <tr><td>对象合法性</td><td>对象类型必须是已知类型；坐标必须在 0–1；人物名称 1–12 字；超限对象拒绝整份文件。</td></tr>
+      <tr><td>数量上限</td><td>对象总数 ≤200，人物 ≤60；超出时拒绝并提示“请拆分模板”。</td></tr>
+    </tbody>
+  </table>
+  <h4>冲突与覆盖</h4>
+  <ul>
+    <li>同一模板 ID 已存在：默认仍作为新模板导入（生成新 ID），不自动覆盖。</li>
+    <li>同名模板已存在：显示非阻塞提示“已有同名模板”，允许导入；列表通过更新时间区分。</li>
+    <li>覆盖导入：必须选择目标模板并二次确认；确认框显示“将用文件内容替换【目标模板名】，目标原有内容不可恢复”。</li>
+    <li>覆盖后：目标模板的 ID 与创建时间保留；名称、分类、地图、描述、标签、图层、对象全部以导入文件为准；更新时间取当前时间。</li>
+  </ul>
+  <h4>安全与异常</h4>
+  <ul>
+    <li>导入文本一律按纯文本渲染；禁止把文件内容作为 HTML/脚本执行，防止 XSS。</li>
+    <li>不加载导入文件中的外部 URL、图片或字体；P0 文件不包含二进制资源。</li>
+    <li>导入过程中不修改现有模板，直到校验通过并确认；失败时保留原模板库不变。</li>
+    <li>P1 增加：导出 PNG、导出全部模板备份、只读分享链接。</li>
+  </ul>
+
+  <h3>FR-10 帮助与快捷键 <span class="badge p0">P0</span></h3>
+  <p><strong>目的：</strong>让第一次使用的社长/指挥在不看说明书的情况下完成第一张图，并在需要时查到数据与快捷键说明。</p>
+  <h4>帮助抽屉</h4>
+  <ul>
+    <li>内容：三步上手（选分类 → 放标点/人物 → 导出）、数据存储说明、快捷键表、地图版本与免责声明、产品版本号。</li>
+    <li>入口：顶部“帮助”；任意页面可打开，打开时不丢失当前编辑状态。</li>
+    <li>首次进入编辑器的一次性提示可关闭，关闭后不再自动出现；可从帮助中重新查看。</li>
+  </ul>
+  <h4>快捷键</h4>
+  <table>
+    <thead><tr><th style="width:22%">按键</th><th>行为</th></tr></thead>
+    <tbody>
+      <tr><td>V</td><td>选择工具</td></tr>
+      <tr><td>H / 空格 + 拖拽</td><td>抓手平移</td></tr>
+      <tr><td>M</td><td>标点工具</td></tr>
+      <tr><td>C</td><td>人物工具（打开添加弹窗）</td></tr>
+      <tr><td>R</td><td>路线工具</td></tr>
+      <tr><td>T</td><td>文字工具</td></tr>
+      <tr><td>Z</td><td>局部部署：拖拽框选一块区域并放大</td></tr>
+      <tr><td>Delete / Backspace</td><td>删除选中对象（模板/分类删除仍需确认）</td></tr>
+      <tr><td>Ctrl/Cmd + Z</td><td>撤销</td></tr>
+      <tr><td>Ctrl/Cmd + Shift + Z 或 Ctrl + Y</td><td>重做</td></tr>
+      <tr><td>Ctrl/Cmd + D</td><td>复制选中对象</td></tr>
+      <tr><td>Esc</td><td>取消当前工具/取消框选/取消选择/关闭弹窗</td></tr>
+      <tr><td>+ / −</td><td>放大/缩小（以视图中心）</td></tr>
+      <tr><td>0</td><td>适应窗口；处于局部视图时返回全图</td></tr>
+    </tbody>
+  </table>
+  <p class="small">在输入框、文本域或正在编辑名称时，除 Esc 外的快捷键不生效，避免误删或误切换工具。</p>
+</section>
+
+<section id="s8">
+  <h2><span class="sec-num">08</span>共享规则</h2>
+  <p class="lead">以下规则被多个功能引用，只在这里定义一次。功能章节里的“见 08 节”都指向这里，避免同一规则出现两种说法。</p>
+
+  <h3>8.1 字段长度与数量上限</h3>
+  <table>
+    <thead><tr><th style="width:24%">对象 / 字段</th><th style="width:22%">上限</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>模板名</td><td>1–40 字</td><td>必填，去除首尾空格；允许重名</td></tr>
+      <tr><td>分类名</td><td>1–12 字</td><td>必填，分类内唯一（忽略大小写）</td></tr>
+      <tr><td>模板描述</td><td>0–200 字</td><td>可选</td></tr>
+      <tr><td>标签</td><td>0–5 个，每个 1–10 字</td><td>可选，标签之间去重</td></tr>
+      <tr><td>人物名称</td><td>1–12 字</td><td>必填；允许同名但提示</td></tr>
+      <tr><td>流派简称</td><td>1–2 字</td><td>必填；用于圆形标记内部</td></tr>
+      <tr><td>人物备注</td><td>0–50 字</td><td>可选</td></tr>
+      <tr><td>标点名称</td><td>0–20 字</td><td>允许为空，此时显示类型简称</td></tr>
+      <tr><td>标点备注</td><td>0–100 字</td><td>可选</td></tr>
+      <tr><td>路线名称</td><td>0–20 字</td><td>可选</td></tr>
+      <tr><td>文字内容</td><td>1–30 字</td><td>单行纯文本</td></tr>
+      <tr><td>单模板对象总数</td><td>≤200</td><td>含标点、人物、路线、文字</td></tr>
+      <tr><td>单模板人物数</td><td>≤60</td><td>含我方、敌方、中立</td></tr>
+      <tr><td>导入文件大小</td><td>≤5 MB</td><td>仅 .json</td></tr>
+      <tr><td>撤销步数</td><td>30 步</td><td>仅当前编辑会话，不持久化</td></tr>
+      <tr><td>导出文件名</td><td>≤80 字</td><td>去除非法文件名字符</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.2 删除与确认矩阵</h3>
+  <table>
+    <thead><tr><th style="width:26%">动作</th><th style="width:16%">是否确认</th><th style="width:18%">是否可撤销</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>删除模板</td><td>是</td><td>否（P0）</td><td>显示模板名、人物数、标点数；建议先导出；P1 回收站</td></tr>
+      <tr><td>删除分类</td><td>是</td><td>否</td><td>模板移入“未分类”，不删除模板</td></tr>
+      <tr><td>删除人物/标点/路线/文字</td><td>否</td><td>是</td><td>删除后 Toast“已删除 · 撤销”</td></tr>
+      <tr><td>覆盖导入</td><td>是</td><td>否</td><td>显示目标模板名与“不可恢复”</td></tr>
+      <tr><td>重命名为空</td><td>否</td><td>—</td><td>恢复上一个有效名称并提示</td></tr>
+      <tr><td>清空本地数据</td><td>—</td><td>—</td><td>P0 不提供入口；用户需通过浏览器设置自行清除</td></tr>
+      <tr><td>保存失败后关闭/刷新</td><td>是（浏览器原生）</td><td>—</td><td>有未保存修改时触发离开确认</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.3 保存状态</h3>
+  <table>
+    <thead><tr><th style="width:18%">状态</th><th style="width:22%">显示</th><th>触发与行为</th></tr></thead>
+    <tbody>
+      <tr><td>已保存</td><td>绿色“已保存 HH:mm”</td><td>最近一次写入成功；无未保存修改</td></tr>
+      <tr><td>保存中</td><td>灰色“保存中…”</td><td>内容变化后、写入完成前；短暂出现</td></tr>
+      <tr><td>保存失败</td><td>琥珀色常驻横幅</td><td>本地存储不可用/配额不足；提供“重试”“导出备份”；编辑继续但只存在内存</td></tr>
+      <tr><td>未保存草稿</td><td>“尚未保存”</td><td>新建/复制/导入后首次写入前；写入成功后转为已保存</td></tr>
+    </tbody>
+  </table>
+
+  <h3>8.4 对象生命周期与撤销</h3>
+  <ul>
+    <li>新增对象 → 自动选中 → 可编辑 → 删除（可撤销）或随模板删除。</li>
+    <li>复制对象/模板会生成新 ID；导入为新建时，模板与所有对象生成新 ID，避免与现有数据冲突。</li>
+    <li>撤销/重做覆盖内容变化（增删改、改名、移动、颜色/状态/备注）；不覆盖缩放、平移、局部部署视图、选中状态、页签切换。</li>
+    <li>图层显隐是模板内容的一部分，会保存和导出，但不进入撤销历史；切换后立即保存。</li>
+    <li>撤销栈最多 30 步；新的编辑动作会清空重做栈。</li>
+  </ul>
+
+  <h3>8.5 空状态与错误状态</h3>
+  <table>
+    <thead><tr><th style="width:26%">场景</th><th>用户看到什么</th><th>可执行动作</th></tr></thead>
+    <tbody>
+      <tr><td>模板库无模板</td><td>“还没有战术模板”+ 说明</td><td>新建空白模板 / 导入模板文件</td></tr>
+      <tr><td>搜索无结果</td><td>关键词 + “没有匹配的模板”</td><td>清除搜索 / 切换分类</td></tr>
+      <tr><td>分类为空</td><td>“该分类还没有模板”</td><td>新建到此分类 / 查看全部</td></tr>
+      <tr><td>本地数据读取失败</td><td>“无法读取本地模板”</td><td>重试 / 导入备份文件</td></tr>
+      <tr><td>保存失败</td><td>常驻横幅 + 原因摘要</td><td>重试 / 导出备份</td></tr>
+      <tr><td>导入校验失败</td><td>前三条具体错误</td><td>重新选择文件 / 取消</td></tr>
+      <tr><td>地图资源加载失败</td><td>纯色底板 + 错误提示</td><td>刷新 / 返回模板库</td></tr>
+      <tr><td>花名册为空</td><td>“还没有人物”</td><td>按流派批量添加</td></tr>
+      <tr><td>未选中对象</td><td>“未选中对象”+ 模板摘要</td><td>在地图上选择 / 打开花名册</td></tr>
+      <tr><td>屏幕过窄</td><td>“建议在桌面浏览器编辑”</td><td>只读查看 / 放大窗口</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="s9">
+  <h2><span class="sec-num">09</span>数据契约</h2>
+  <p class="lead">导入导出是用户可见的产品契约，不是内部数据库设计。这里只定义文件里“有什么、怎么解释”，不规定前端用 localStorage 还是 IndexedDB、组件如何实现。</p>
+
+  <h3>9.1 文件结构示例</h3>
+  <pre><code>{
+  "format": "yysls-baizhan-tactic",
+  "schemaVersion": 1,
+  "exportedAt": "2026-11-23T14:32:00+08:00",
+  "appVersion": "0.1.0",
+  "template": {
+    "id": "tpl_01",
+    "name": "三路开局 · 翊1队",
+    "category": "开局布防",
+    "mapId": "baizhan_schematic_v2",
+    "description": "开局沿上路推进，翊1队跟双剑偷上路。",
+    "tags": ["开局", "三路"],
+    "createdAt": "2026-11-20T20:10:00+08:00",
+    "updatedAt": "2026-11-23T14:32:00+08:00",
+    "layers": { "markers": true, "characters": true, "annotations": true },
+    "objects": [
+      {
+        "id": "m1", "type": "marker", "markerType": "tower",
+        "x": 0.69, "y": 0.26, "label": "上路敌方人墙",
+        "state": "intact", "color": "#B08A45", "size": "m", "note": ""
+      },
+      {
+        "id": "c1", "type": "character", "name": "翊1号",
+        "school": "牵丝·翊", "abbr": "翊", "camp": "ally",
+        "group": "一队", "role": "输出", "x": 0.28, "y": 0.52,
+        "color": "#3F7D58", "note": "跟上路偷塔", "visible": true
+      },
+      {
+        "id": "c2", "type": "character", "name": "双剑1号",
+        "school": "双剑", "abbr": "双剑", "camp": "ally",
+        "group": "一队", "role": "输出", "x": 0.24, "y": 0.62,
+        "color": "#8C8F9A", "note": "", "visible": true
+      },
+      {
+        "id": "r1", "type": "route", "label": "偷上路",
+        "points": [[0.28, 0.52], [0.45, 0.33], [0.69, 0.26]],
+        "style": "dashed", "color": "#B23A2E", "width": 4,
+        "arrow": true, "note": ""
+      },
+      {
+        "id": "t1", "type": "text", "x": 0.50, "y": 0.34,
+        "content": "张豹刷新前 30 秒集合", "fontSize": 16, "color": "#B23A2E"
+      }
+    ]
+  }
+}</code></pre>
+
+  <h3>9.2 模板字段</h3>
+  <table>
+    <thead><tr><th style="width:18%">字段</th><th style="width:16%">类型</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td><code>format</code></td><td>string</td><td>固定为 <code>yysls-baizhan-tactic</code>，用于识别文件</td></tr>
+      <tr><td><code>schemaVersion</code></td><td>integer</td><td>文件结构版本；结构不兼容时递增</td></tr>
+      <tr><td><code>exportedAt</code></td><td>ISO 8601</td><td>导出时间；仅作参考，不参与冲突判断</td></tr>
+      <tr><td><code>appVersion</code></td><td>string</td><td>导出时的产品版本，便于排查兼容问题</td></tr>
+      <tr><td><code>template.id</code></td><td>string</td><td>模板唯一 ID；新建导入时重新生成</td></tr>
+      <tr><td><code>template.name</code></td><td>string</td><td>1–40 字</td></tr>
+      <tr><td><code>template.category</code></td><td>string</td><td>分类名称；导入时若不存在则创建或落入“未分类”</td></tr>
+      <tr><td><code>template.mapId</code></td><td>string</td><td>P0 固定 <code>baizhan_schematic_v2</code>；不同底图用不同 ID</td></tr>
+      <tr><td><code>template.description</code></td><td>string</td><td>0–200 字</td></tr>
+      <tr><td><code>template.tags</code></td><td>string[]</td><td>0–5 个</td></tr>
+      <tr><td><code>template.layers</code></td><td>object</td><td>三个布尔值；控制导入后的初始显隐</td></tr>
+      <tr><td><code>template.objects</code></td><td>array</td><td>标点、人物、路线、文字；顺序即绘制顺序的基础</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.3 对象字段</h3>
+  <table>
+    <thead><tr><th style="width:14%">类型</th><th style="width:34%">字段</th><th>规则</th></tr></thead>
+    <tbody>
+      <tr><td><code>marker</code></td><td><code>markerType, x, y, label, state, color, size, note</code></td><td><code>markerType</code> 取第 07 节类型；<code>x/y</code> 0–1；<code>size</code> s/m/l；<code>state</code> 必须属于该类型的可选状态</td></tr>
+      <tr><td><code>character</code></td><td><code>name, school, abbr, camp, group, role, x, y, color, note, visible</code></td><td><code>camp</code> ally/enemy/neutral；<code>visible</code> 控制导入后是否显示；同模板最多 60 人</td></tr>
+      <tr><td><code>route</code></td><td><code>label, points, style, color, width, arrow, note</code></td><td><code>points</code> 至少 2 个 <code>[x,y]</code>；<code>style</code> solid/dashed；<code>width</code> 2/4/6</td></tr>
+      <tr><td><code>text</code></td><td><code>x, y, content, fontSize, color</code></td><td><code>content</code> 1–30 字，纯文本；<code>fontSize</code> 12/16/20</td></tr>
+    </tbody>
+  </table>
+
+  <h3>9.4 坐标、ID 与版本</h3>
+  <ul>
+    <li>坐标 <code>x/y</code> 使用地图宽高的归一化比例（0–1，保留 4 位小数），原点为地图左上角；地图缩放/窗口变化不改变坐标。</li>
+    <li>同一文件内对象 ID 必须唯一；导入为新建时全部重新生成；覆盖导入时以文件内容为准，但模板 ID 保留目标模板的 ID。</li>
+    <li><code>schemaVersion</code> 为整数；新增可选字段不递增，删除/改义字段或必填规则变化时递增，并提供迁移说明。</li>
+    <li>读取时忽略未知字段，不因未知字段阻止导入；导出时只写当前版本定义的字段。</li>
+  </ul>
+</section>
+<section id="s10">
+  <h2><span class="sec-num">10</span>非功能需求</h2>
+  <p class="lead">这一节约束“在什么条件下必须仍然可用”，而不是实现方案。性能数字是初版目标，需在样机阶段实测后校准；未校准前不作为对外承诺。</p>
+
+  <h3>10.1 性能与容量</h3>
+  <table>
+    <thead><tr><th style="width:24%">场景</th><th style="width:30%">初版目标</th><th>边界与降级</th></tr></thead>
+    <tbody>
+      <tr><td>首屏可交互</td><td>桌面主流配置、资源已缓存时 ≤2 秒；首次加载受网络与资源体积影响。</td><td>超过 5 秒时显示加载说明，不出现空白页；地图加载失败按 08.3 的错误状态处理。</td></tr>
+      <tr><td>地图拖拽与缩放</td><td>单模板 200 个对象、缩放 25%–400% 时保持连续、可跟手；框选局部部署后 300 毫秒内完成视图过渡；不承诺固定帧率。</td><td>低性能设备可减少阴影、光晕等非关键效果，但不得丢失对象、不得阻塞保存；局部视图切换卡顿时允许关闭网格。</td></tr>
+      <tr><td>自动保存</td><td>停止编辑后 1 秒内触发；保存状态在 1 秒内给出反馈。</td><td>保存期间不锁定输入；连续编辑合并为一次保存，避免每次按键都写入。</td></tr>
+      <tr><td>导入解析与校验</td><td>5 MB 文件在 3 秒内给出“通过/不通过”结果。</td><td>超过 3 秒显示“正在校验”，不得让弹窗无响应；超时或异常按校验失败处理，不写入数据。</td></tr>
+      <tr><td>模板库检索</td><td>100 个模板时，搜索与分类切换在 300 毫秒内出结果。</td><td>结果较多时先显示已匹配项，不做分页阻塞；P0 不要求缩略图预览。</td></tr>
+      <tr><td>模板库总量</td><td>[TBD] 受浏览器本地存储配额限制。</td><td>接近配额时提前提示导出备份；写入失败按 10.3 与 FR-08 处理。</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.2 兼容性与屏幕</h3>
+  <table>
+    <thead><tr><th style="width:22%">环境</th><th style="width:20%">支持级别</th><th>说明</th></tr></thead>
+    <tbody>
+      <tr><td>Chrome / Edge 最近两个大版本</td><td>完整支持</td><td>P0 主要验证环境</td></tr>
+      <tr><td>Firefox ESR 及最近一个大版本</td><td>完整支持</td><td>重点验证导入、导出与键盘操作</td></tr>
+      <tr><td>Safari 16 及以上</td><td>完整支持</td><td>重点验证本地存储与下载行为</td></tr>
+      <tr><td>桌面宽度 ≥1280px</td><td>推荐</td><td>三栏编辑器完整展开</td></tr>
+      <tr><td>桌面宽度 1024–1279px</td><td>可编辑</td><td>左右面板收窄；属性面板可折叠</td></tr>
+      <tr><td>宽度 &lt;1024px（平板/手机）</td><td>提示为主</td><td>不承诺完整编辑；显示“建议在桌面浏览器编辑”，模板库可浏览，编辑器不保证可用；P1 再做小屏只读布局</td></tr>
+      <tr><td>IE 与其他旧版浏览器</td><td>不支持</td><td>显示升级提示，不进入编辑器</td></tr>
+    </tbody>
+  </table>
+
+  <h3>10.3 可用性与离线</h3>
+  <ul>
+    <li>产品为纯前端页面，打开后不依赖服务端接口；页面已经加载的情况下，断网仍可继续编辑与导出。</li>
+    <li>P0 不提供 PWA 安装、后台同步或离线包；刷新或重新打开页面仍需能正常加载页面资源。</li>
+    <li>本地存储不可用（无痕模式限制、配额不足、浏览器策略）时，允许继续在内存中编辑，但必须常驻“保存失败”提示，并提供“重试保存”和“导出备份”。</li>
+    <li>不把“关闭页面后恢复”作为保存失败时的兜底承诺；未保存内容在刷新或关闭后丢失，文案必须提前说明。</li>
+  </ul>
+
+  <h3>10.4 数据、隐私与留存</h3>
+  <ul>
+    <li>不要求登录，不建立账号体系；模板内容不上传服务器，也不做跨设备自动同步。</li>
+    <li>P0 不接入第三方统计、广告或用户行为埋点；若后续引入，需在帮助中明确说明并在导入/导出相关页面提示。</li>
+    <li>数据只存在当前浏览器与当前设备；清除浏览器数据、更换浏览器、使用无痕模式都可能导致模板不可见。</li>
+    <li>产品不提供自动云备份；“导出 JSON”是用户自行备份与迁移的唯一 P0 手段。</li>
+    <li>导出文件包含模板名、分类、备注、人物花名与标点信息；分享前由用户自行确认是否包含内部信息。</li>
+    <li>删除模板、分类按 08.2 的确认矩阵执行；删除后的数据不进入回收站，用户需依赖导出备份恢复。</li>
+  </ul>
+
+  <h3>10.5 安全</h3>
+  <ul>
+    <li>导入文件一律视为不可信输入：先校验格式、字段、坐标、数量与长度，校验不通过不写入任何数据。</li>
+    <li>模板名、人物名、备注、文字标注等全部按纯文本渲染；不把文件内容当作 HTML、样式或脚本执行。</li>
+    <li>不加载导入文件中的外部图片、字体、链接或远程资源；P0 文件不包含二进制资源。</li>
+    <li>导出文件名按 FR-09 清洗非法字符并限制长度，避免路径穿越或异常文件名。</li>
+    <li>产品不收集凭证、不接入支付、不执行任何服务端指令；安全边界以浏览器同源策略与本地文件解析为限。</li>
+  </ul>
+
+  <h3>10.6 可访问性</h3>
+  <ul>
+    <li>模板库、弹窗、属性面板与工具栏支持键盘到达与操作；焦点样式可见，弹窗打开后焦点进入弹窗，Esc 关闭。</li>
+    <li>正文文字与背景对比度不低于 4.5:1；大号文字与图形控件不低于 3:1。</li>
+    <li>阵营、状态、图层不能只靠颜色区分：同时提供文字、形状、字母缩写或图标。</li>
+    <li>尊重系统“减少动效”设置；关闭非必要的过渡与脉冲动画，不影响功能。</li>
+    <li>地图画布不承诺完整的读屏体验；花名册、图层列表和属性面板提供等价的文本入口。画布对象的读屏支持列为 [Assumption, TBD]。</li>
+  </ul>
+
+  <h3>10.7 版权与合规</h3>
+  <ul>
+    <li>本产品为非官方玩家工具，与网易及《燕云十六声》官方无关联；页面与导出文件需保留该声明。</li>
+    <li>不使用官方 Logo、宣传图、游戏截图或官方地图美术；底图为按公开实机截图重绘的矢量结构示意，仅表达三路、人墙、大鹅、发财树、据点与野区的相对关系。</li>
+    <li>流派名称、玩法名称仅用于说明与识别，不宣称官方授权或数据准确性。</li>
+    <li>P0 不包含付费、广告、模板交易或用户内容公开分发，避免引入额外的合规义务。</li>
+  </ul>
+
+  <h3>10.8 语言与本地化</h3>
+  <ul>
+    <li>P0 仅提供简体中文界面与中文文案；不承诺多语言切换。</li>
+    <li>日期时间按用户本地时区显示；导出文件中的时间使用带时区的 ISO 8601 格式。</li>
+    <li>人物名、分类名、备注允许中文、英文、数字与常用符号；长度限制按 08.1 执行。</li>
+  </ul>
+</section>
+<section id="s11">
+  <h2><span class="sec-num">11</span>核心流程</h2>
+  <p class="lead">流程只描述用户可见的步骤、分支与结束条件。每一步对应第 07 节的功能编号，不重复字段与校验细节。</p>
+
+  <h3>11.1 首次新建并导出一份战术</h3>
+  <p><strong>触发：</strong>用户第一次打开产品，模板库为空。<strong>完成条件：</strong>模板出现在模板库，且用户成功下载一份 JSON。</p>
+  <div class="flow">
+    <span class="step">打开模板库</span><span class="arrow">→</span>
+    <span class="step">新建模板</span><span class="arrow">→</span>
+    <span class="step">填写名称/分类</span><span class="arrow">→</span>
+    <span class="step">进入编辑器</span><span class="arrow">→</span>
+    <span class="step">添加人物</span><span class="arrow">→</span>
+    <span class="step">放置标点/路线</span><span class="arrow">→</span>
+    <span class="step">自动保存</span><span class="arrow">→</span>
+    <span class="step">导出 JSON</span>
+  </div>
+  <ol>
+    <li>空状态显示“还没有战术模板”，提供“新建空白模板”和“导入模板文件”两个入口。</li>
+    <li>新建弹窗只要求模板名；分类默认“未分类”，地图固定为百业战示意底图。名称为空时“创建”不可用。</li>
+    <li>创建成功后直接进入编辑器；此时即使未做任何编辑，模板也已写入本地，返回模板库可以看到。</li>
+    <li>用户按 C 打开“添加流派人物”，选择流派预设与数量，系统生成“翊1号”“翊2号”这类可改名称的人物并落在地图中心附近。</li>
+    <li>用户用 M 放置人墙、大鹅、发财树、野区首领、集合点等标点；用 R 画路线；用 T 写文字。所有操作立即在地图上生效。</li>
+    <li>停止编辑后自动保存，顶部显示“已保存 HH:mm”。</li>
+    <li>点击“导出”，确认文件名后下载；导出成功后提示“已导出，可通过群聊发送该文件”。</li>
+  </ol>
+  <p class="small">分支：名称为空、超过 40 字或只含空白时阻止创建；分类不存在时先创建分类或落入“未分类”；对象达到 200 个时阻止继续新增并提示拆分模板。</p>
+
+  <h3>11.2 打开既有模板继续编辑</h3>
+  <p><strong>触发：</strong>用户需要查看或修改上一场的战术。<strong>完成条件：</strong>修改已保存，返回模板库后卡片信息与更新时间正确。</p>
+  <div class="flow">
+    <span class="step">模板库</span><span class="arrow">→</span>
+    <span class="step">搜索/选分类</span><span class="arrow">→</span>
+    <span class="step">打开模板</span><span class="arrow">→</span>
+    <span class="step">编辑</span><span class="arrow">→</span>
+    <span class="step">自动保存</span><span class="arrow">→</span>
+    <span class="step">返回模板库</span>
+  </div>
+  <ul>
+    <li>模板库按更新时间倒序展示；搜索匹配模板名、分类、标签与人物名。</li>
+    <li>打开模板时恢复上次保存的对象、图层显隐与模板信息；缩放、平移与选中状态不恢复。</li>
+    <li>返回模板库不打断保存；若仍有“保存中”，卡片先显示旧更新时间，保存成功后刷新。</li>
+  </ul>
+
+  <h3>11.3 导入模板文件</h3>
+  <p><strong>触发：</strong>用户从队友或旧设备拿到一份 JSON。<strong>完成条件：</strong>模板出现在模板库并可正常打开；任何失败都不改变现有模板库。</p>
+  <div class="flow">
+    <span class="step">导入入口</span><span class="arrow">→</span>
+    <span class="step">选择/拖拽文件</span><span class="arrow">→</span>
+    <span class="step">解析与校验</span><span class="arrow">→</span>
+    <span class="step">预览摘要</span><span class="arrow">→</span>
+    <span class="step">选择导入方式</span><span class="arrow">→</span>
+    <span class="step">确认导入</span><span class="arrow">→</span>
+    <span class="step">打开或留在模板库</span>
+  </div>
+  <table>
+    <thead><tr><th style="width:24%">分支</th><th style="width:30%">用户看到什么</th><th>系统行为</th></tr></thead>
+    <tbody>
+      <tr><td>文件不是 .json 或超过 5 MB</td><td>“仅支持本工具导出的 JSON，且不超过 5 MB”</td><td>不解析，不写入</td></tr>
+      <tr><td>JSON 无法解析</td><td>“文件不是有效的 JSON”</td><td>不写入，保留弹窗供重新选择</td></tr>
+      <tr><td>格式标识不符</td><td>“不是本工具的模板文件”</td><td>不写入，不提供强制导入</td></tr>
+      <tr><td>schemaVersion 高于当前支持</td><td>“文件由更新版本创建，可能无法完整显示”</td><td>允许取消或只读导入；只读导入不覆盖现有模板</td></tr>
+      <tr><td>必填字段缺失或对象非法</td><td>列出前三条具体问题</td><td>整份拒绝，不部分导入</td></tr>
+      <tr><td>对象或人物超上限</td><td>“对象超过 200 个，请拆分模板”或“人物超过 60 人”</td><td>整份拒绝</td></tr>
+      <tr><td>模板 ID 已存在</td><td>默认“作为新模板导入”，生成新 ID</td><td>不自动覆盖；覆盖需用户主动选择目标模板</td></tr>
+      <tr><td>同名模板已存在</td><td>非阻塞提示“已有同名模板”</td><td>允许导入，用更新时间区分</td></tr>
+      <tr><td>用户选择覆盖</td><td>二次确认“目标原有内容不可恢复”</td><td>保留目标 ID 与创建时间，其余以文件为准</td></tr>
+      <tr><td>任意步骤取消</td><td>弹窗关闭</td><td>现有模板库不变，不产生半成品</td></tr>
+    </tbody>
+  </table>
+
+  <h3>11.4 保存失败与恢复</h3>
+  <p><strong>触发：</strong>本地存储不可用、配额不足或写入异常。<strong>完成条件：</strong>用户明确知道“未保存”，并能重试或导出备份。</p>
+  <ol>
+    <li>顶部出现常驻横幅：“保存失败，当前修改仅在本页内存中”，附“重试保存”“导出备份”。</li>
+    <li>用户可继续编辑；保存状态保持“保存失败”，不得短暂显示“已保存”。</li>
+    <li>点击“重试保存”：成功后横幅消失，状态变为“已保存 HH:mm”；失败则更新原因摘要与时间。</li>
+    <li>点击“导出备份”：按当前内存内容导出 JSON，即使模板尚未成功写入本地也可导出。</li>
+    <li>用户刷新或关闭页面：加载更早一次成功保存的版本，并提示“有未保存的更改已丢失”。</li>
+  </ol>
+
+  <h3>11.5 误删与撤销</h3>
+  <p><strong>触发：</strong>用户删除人物、标点、路线或文字。<strong>完成条件：</strong>对象恢复或用户确认放弃。</p>
+  <div class="flow">
+    <span class="step">选中对象</span><span class="arrow">→</span>
+    <span class="step">Delete</span><span class="arrow">→</span>
+    <span class="step">对象消失 + Toast</span><span class="arrow">→</span>
+    <span class="step">Ctrl/Cmd + Z</span><span class="arrow">→</span>
+    <span class="step">对象恢复</span>
+  </div>
+  <ul>
+    <li>删除对象不弹确认；Toast 显示“已删除 · 撤销”，点击“撤销”等价于一次撤销操作。</li>
+    <li>撤销栈最多 30 步，仅当前编辑会话有效；刷新后清空。</li>
+    <li>删除模板或分类仍需二次确认，且不在撤销栈内；确认后不可恢复。</li>
+    <li>撤销后若对象原本处于选中状态，恢复时重新选中；属性面板同步刷新。</li>
+  </ul>
+
+  <h3>11.6 备份、迁移与换设备</h3>
+  <p><strong>触发：</strong>用户更换浏览器、清理缓存或要把战术发给队友。<strong>完成条件：</strong>接收方成功导入并能打开同一张图。</p>
+  <ol>
+    <li>发送方在编辑器导出当前模板 JSON，文件名包含模板名与日期。</li>
+    <li>接收方在模板库点击“导入”，选择文件，确认预览中的模板名、人物数与标点数。</li>
+    <li>接收方选择“作为新模板导入”，确认后自动打开；分类不存在时创建或落入“未分类”。</li>
+    <li>双方各自在本地继续编辑，互不自动同步；后续变更需再次导出/导入。</li>
+  </ol>
+  <p class="small">P0 不支持整个模板库一键备份、只读分享链接或云端迁移：全量备份与只读分享链接列入 P1，云端迁移属于 P2 的账号与云同步范围。</p>
+</section>
+<section id="s12">
+  <h2><span class="sec-num">12</span>待确认问题</h2>
+  <p class="lead">以下问题会改变范围、数据契约或交互，但在 P0 样机前不阻塞设计。每项都给出当前的临时处理，避免开发阶段临时拍脑袋。</p>
+  <table>
+    <thead><tr><th style="width:7%">编号</th><th style="width:30%">问题</th><th style="width:30%">影响</th><th>当前临时处理</th></tr></thead>
+    <tbody>
+      <tr><td>Q1</td><td>底图精度：v2 结构示意是否满足指挥需要？玄元教据点的精确点位是否需要实测补录？是否需要多张地图？</td><td>地图对象坐标、底图资源、版权声明、导入文件的 <code>mapId</code></td><td>P0 固定一张按公开截图重绘的底图 <code>baizhan_schematic_v2</code>；玄元教以虚线候选位表示，具体点位由用户用标点记录；不复制官方美术。更高精度底图涉及素材与授权，列入 P2/后续评估。</td></tr>
+      <tr><td>Q2</td><td>一个模板只画一张图，还是需要“开局/中期/后期”多阶段方案？</td><td>模板结构、页签、导入导出格式、对象数量上限</td><td>P0 单模板单图；阶段方案列入 P1，届时以“方案页”扩展，不破坏现有文件。</td></tr>
+      <tr><td>Q3</td><td>是否需要把百业 30 人名单批量导入并自动生成人物标记？名单来源与格式是什么？</td><td>人物添加效率、字段（游戏 ID/花名/队伍）、隐私</td><td>P0 只支持逐个或按流派批量添加；名单导入列入 P1，格式待定。</td></tr>
+      <tr><td>Q4</td><td>分类采用完全自由命名，还是提供固定维度（如开局/资源/防守/复盘）？</td><td>模板库信息架构、搜索、跨人共享的一致性</td><td>P0 自由分类 + 默认“未分类”；是否提供推荐分类模板，待实际使用后决定。</td></tr>
+      <tr><td>Q5</td><td>覆盖导入是否需要“版本冲突检测”，还是只做二次确认？</td><td>多人协作时的数据丢失风险、导入流程复杂度</td><td>P0 只做二次确认，不比较更新时间；模板版本历史列入 P1，冲突检测未排期。</td></tr>
+      <tr><td>Q6</td><td>分享方式是继续发 JSON 文件，还是需要只读链接/图片？</td><td>传播成本、是否需要后端、隐私</td><td>P0 仅 JSON 文件；导出 PNG 与只读分享链接列入 P1。</td></tr>
+      <tr><td>Q7</td><td>平板是否必须可编辑？手机是否只做查看？</td><td>布局断点、触控手势、属性面板形态</td><td>P0 桌面优先；&lt;1024px 只提示，不承诺编辑。P1 安排平板/移动只读布局，完整触控编辑未排期。</td></tr>
+      <tr><td>Q8</td><td>流派预设由谁维护？新流派上线后如何更新？用户自定义流派是否进入导出文件？</td><td>预设准确性、版本更新、跨人一致性</td><td>P0 内置当前主流流派预设，允许改简称/颜色/定位；自定义流派随模板保存。预设更新机制 [TBD]。</td></tr>
+      <tr><td>Q9</td><td>模板库总量上限与本地存储配额如何提示？</td><td>保存失败概率、备份提醒时机</td><td>P0 不设业务总量上限，按浏览器配额处理；接近配额时提示导出备份。具体阈值 [TBD]。</td></tr>
+      <tr><td>Q10</td><td>是否需要自定义阵营名称（如“我方/敌方”改为百业名）与每方人数上限？</td><td>人物标记、图例、导出字段</td><td>P0 固定“我方/敌方/中立”，单模板人物上限 60；自定义阵营名列入后续评估，未排期。</td></tr>
+    </tbody>
+  </table>
+  <div class="assump">
+    <strong>确认建议：</strong>Q1、Q2、Q4 会直接影响 P0 的数据结构与页面布局，建议在视觉稿评审前，由产品负责人与至少一名实际指挥共同确认；其余问题可在 P0 样机试用后，根据真实使用记录再定。
+  </div>
+</section>
+
+<section id="s13">
+  <h2><span class="sec-num">13</span>参考资料</h2>
+  <p class="lead">以下资料用于理解玩法机制与流派组合，均为公开网页；引用格式按 MLA 第 9 版整理。游戏内容会随版本变化，机制描述以正文标注的日期与来源为准。</p>
+  <ol class="refs">
+    <li id="ref1">游侠网. “《燕云十六声》百业战玩法思路.” <em>游侠网</em>, 2026, <a href="https://gl.ali213.net/html/2026-1/1735653.html" target="_blank" rel="noopener">https://gl.ali213.net/html/2026-1/1735653.html</a>.</li>
+    <li id="ref2">“燕云十六声百业战玩法详解.” <em>52PK 单机频道</em>, n.d., <a href="https://m.52pk.com/pc/miji/7607482.shtml" target="_blank" rel="noopener">https://m.52pk.com/pc/miji/7607482.shtml</a>.</li>
+    <li id="ref3">燕云十六声官方. “人在开封，带来了新玩法和外观最新情报.” <em>大神</em>, 2025 年 3 月 12 日, <a href="http://ds.163.com/article/67d19b094f0aeb2864e3cb6c/" target="_blank" rel="noopener">http://ds.163.com/article/67d19b094f0aeb2864e3cb6c/</a>.</li>
+    <li id="ref4">燕云十六声官方. “5月27日优化与修复一览.” <em>《燕云十六声》官方网站</em>, 网易, 2026 年 5 月 27 日, <a href="https://www.wherewindsmeetgame.com/m/hmt/news/official/527update.html" target="_blank" rel="noopener">https://www.wherewindsmeetgame.com/m/hmt/news/official/527update.html</a>.</li>
+    <li id="ref5">LDCloud. “《燕云十六声》主流推荐流派一篇看懂.” <em>LDCloud</em>, 2025 年 12 月 16 日, <a href="https://www.ldcloud.net/tw/blog/where-winds-meet-tw-martial-arts-guide" target="_blank" rel="noopener">https://www.ldcloud.net/tw/blog/where-winds-meet-tw-martial-arts-guide</a>.</li>
+    <li id="ref6">燕云攻略. “流派怎么选？全流派详解.” <em>燕云攻略</em>, 2026 年 11 月 20 日, <a href="https://guide.nidcsoft.cn/guides/tier-pick.html" target="_blank" rel="noopener">https://guide.nidcsoft.cn/guides/tier-pick.html</a>.</li>
+    <li id="ref7">17173. “【燕云十六声】牵丝翊焚诀在此！速看！一起本里转圈圈~.” <em>17173.com</em>, 2026, <a href="http://news.17173.com/content/05012026/000259652.shtml" target="_blank" rel="noopener">http://news.17173.com/content/05012026/000259652.shtml</a>.</li>
+    <li id="ref8">17173. “【燕云十六声】「破竹·鸢」手甲+绳镖保姆级教学攻略，输出循环，装备搭配及毕业属性推荐！.” <em>17173.com</em>, 2025, <a href="https://news.17173.com/content/11232025/181445489.shtml" target="_blank" rel="noopener">https://news.17173.com/content/11232025/181445489.shtml</a>.</li>
+    <li id="ref9">17173. “《燕云十六声》唐刀裂石钧装备心法奇术及输出思路分享.” <em>17173.com</em>, 2026, <a href="https://news.17173.com/content/01082026/202101859.shtml" target="_blank" rel="noopener">https://news.17173.com/content/01082026/202101859.shtml</a>.</li>
+    <li id="ref10">燕云十六声官方. “拨山取月，决狱悬锋丨新流派「鸣金·霆」破空而至.” <em>《燕云十六声》官方网站</em>, 2026 年 11 月 1 日, <a href="https://www.yysls.cn/m/news/official/20261101/37780_1318329.html" target="_blank" rel="noopener">https://www.yysls.cn/m/news/official/20261101/37780_1318329.html</a>.</li>
+    <li id="ref11">OSLink. “《燕云十六声》破竹樽流派玩法全攻略：悬身拳法、断水双诀解析.” <em>OSLink</em>, n.d., <a href="https://www.oslink.io/tw/blog/guide/where-winds-meet-bamboocut-draught-guide.html" target="_blank" rel="noopener">https://www.oslink.io/tw/blog/guide/where-winds-meet-bamboocut-draught-guide.html</a>.</li>
+    <li id="ref12">多特游戏. “《燕云十六声》双剑流玩法介绍：配装与输出技巧详解.” <em>多特游戏</em>, 2025, <a href="https://m.duote.com/tech/202501/820491.html" target="_blank" rel="noopener">https://m.duote.com/tech/202501/820491.html</a>.</li>
+    <li id="ref13">17173. “《燕云十六声》破竹尘装备心法奇术及输出思路分享.” <em>17173.com</em>, 2026, <a href="https://news.17173.com/content/01122026/120605137.shtml" target="_blank" rel="noopener">https://news.17173.com/content/01122026/120605137.shtml</a>.</li>
+  </ol>
+  <div class="note">
+    访问日期均为 2026 年 11 月 23 日。部分第三方文章的发布日期无法从页面摘要确认，按 MLA 规则记为 “n.d.” 或只保留年份；这不妨碍其作为玩法理解的辅助资料，但在对外文档中不应被引用为官方数据。
+  </div>
+</section>
+
+<section id="s14">
+  <h2><span class="sec-num">14</span>附录</h2>
+
+  <h3>14.1 版本记录</h3>
+  <table>
+    <thead><tr><th style="width:14%">版本</th><th style="width:18%">日期</th><th>变更</th></tr></thead>
+    <tbody>
+      <tr><td>v0.2</td><td>2026-11-23</td><td>按公开实机截图纠正地图布局并重绘 6.5 高清底图；新增线框 B-1 与“局部部署”规则；缩放范围调整为 25%–400%；底图版本更新为 <code>baizhan_schematic_v2</code>；同步数据示例、快捷键与性能目标。</td></tr>
+      <tr><td>v0.1</td><td>2026-11-23</td><td>初稿。完成 00–14 章：背景、玩法与流派研究、用户与场景、范围、信息架构、UI 线框、功能需求、共享规则、数据契约、非功能需求、核心流程、待确认问题与参考资料。</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.2 文档内设计稿索引</h3>
+  <table>
+    <thead><tr><th style="width:18%">编号</th><th style="width:26%">内容</th><th>位置</th></tr></thead>
+    <tbody>
+      <tr><td>图 6-1</td><td>百业战底图：左右基地、三路、人墙、野区、首领候选点、玄元教候选位、中场舞台</td><td>第 06 节 6.5</td></tr>
+      <tr><td>线框 A</td><td>模板库：分类、搜索、卡片网格、空状态</td><td>第 06 节</td></tr>
+      <tr><td>线框 B</td><td>编辑器：顶部栏、工具栏、三路示意地图、属性面板、图层面板</td><td>第 06 节</td></tr>
+      <tr><td>线框 B-1</td><td>局部部署：框选上路、放大到 200%、连续放置与网格吸附</td><td>第 06 节</td></tr>
+      <tr><td>线框 C</td><td>添加流派人物：流派预设、数量、命名规则、落点</td><td>第 06 节</td></tr>
+      <tr><td>线框 D</td><td>导入预览：文件摘要、校验结果、导入方式</td><td>第 06 节</td></tr>
+      <tr><td>数据示例</td><td>单模板 JSON 结构、字段与坐标规则</td><td>第 09 节</td></tr>
+    </tbody>
+  </table>
+
+  <h3>14.3 后续需要补充的设计交付物</h3>
+  <ul>
+    <li>高保真视觉稿：模板库、编辑器、添加人物、导入预览四个关键界面的桌面版。</li>
+    <li>底图实测稿：在保持结构示意的前提下，用游戏内截图核对玄元教据点的精确位置，并补充复活点、大鹅、发财树与大门的具体点位。</li>
+    <li>组件状态图：按钮、输入框、卡片、Toast、横幅的默认/悬停/禁用/错误状态。</li>
+    <li>可用性测试脚本：让一名实际指挥在无人讲解的情况下完成“新建模板 → 添加 5 个流派人物 → 画一条路线 → 导出 → 再导入”。</li>
+  </ul>
+
+  <h3>14.4 事实边界与免责声明</h3>
+  <ul>
+    <li>百业战机制与流派组合来自第 13 节的公开资料，截止 2026 年 11 月 23 日可查；官方未公开的数值、匹配规则与刷新细节不在本文档的断言范围内。</li>
+    <li>“双剑”是玩家社区对“无名剑 + 九剑”组合的俗称，不是官方流派名；本文档保留该说法，是为了贴合用户的实际叫法。</li>
+    <li>地图为自制结构示意，不追求与游戏内地形逐点一致；所有标点位置用于表达战术意图，不作为官方坐标。</li>
+    <li>本文档只定义产品行为与界面，不包含技术选型、组件实现、接口设计或开发排期。</li>
+  </ul>
+</section>
+<div class="footer">
+  本文档为非官方玩家工具设计稿，与网易及《燕云十六声》官方无关联。游戏名称、流派名称仅用于说明；地图为结构示意，不使用官方美术素材。
+</div>
+</div>
+</main>
+</div>
+</body>
+</html>

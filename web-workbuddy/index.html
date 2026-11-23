@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>百业战 · 战术推演</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+
+  <!-- ===== 顶部全屏提示条 ===== -->
+  <div class="fullscreen-tip" id="fullscreenTip">
+    <span class="tip-icon">⛶</span>
+    <span>战术板内容较多，建议按 <b>F11</b> 或点击下方按钮<b>全屏显示</b>，获得更佳体验</span>
+    <button class="fs-btn" id="btnFullscreen" title="进入全屏">全屏显示</button>
+    <button class="fs-tip-close" id="fsTipClose" title="关闭提示">✕</button>
+  </div>
+
+  <!-- ===== 顶部工具栏 ===== -->
+  <header class="topbar">
+    <div class="brand">
+      <div class="seal">百<br>业</div>
+      <div class="brand-text">
+        <h1>百业战 · 战术推演</h1>
+        <span>运筹帷幄 · 决胜千里</span>
+      </div>
+    </div>
+
+    <div class="scheme-bar">
+      <label>战术方案</label>
+      <select id="schemeSelect" aria-label="选择战术方案"></select>
+      <button class="btn btn-ghost" id="btnNewScheme" title="新建方案">＋</button>
+      <button class="btn btn-ghost" id="btnCopyScheme" title="复制方案">⧉</button>
+      <button class="btn btn-ghost danger" id="btnDelScheme" title="删除方案">✕</button>
+    </div>
+
+    <div class="stage-tabs" id="stageTabs"><!-- 阶段按钮由 renderStageTabs() 按 STAGE_ORDER 生成 --></div>
+
+    <div class="top-actions">
+      <button class="btn" id="btnUndo" title="撤销">↶ <span>撤销</span></button>
+      <button class="btn" id="btnRedo" title="重做">↷ <span>重做</span></button>
+      <span class="divider"></span>
+      <button class="btn" id="btnImport">⇩ <span>导入 JSON</span></button>
+      <button class="btn btn-primary" id="btnExport">⇧ <span>导出 JSON</span></button>
+      <button class="btn" id="btnHelp" title="使用说明">？ <span>说明</span></button>
+      <span class="save-state" id="saveState">● 已保存</span>
+    </div>
+    <input type="file" id="fileInput" accept="application/json,.json" hidden>
+    <input type="file" id="mapFileInput" accept="image/*" hidden>
+  </header>
+
+  <!-- ===== 主体三栏 ===== -->
+  <main class="workspace">
+
+    <!-- 左侧资源面板 -->
+    <aside class="panel panel-left">
+      <section class="pblock">
+        <div class="pblock-head">
+          <h2>流派库</h2>
+          <span class="hint">点击添加人物</span>
+        </div>
+        <div class="school-filter-bar" id="schoolFilterBar"></div>
+        <div class="school-grid" id="schoolGrid"></div>
+      </section>
+
+      <section class="pblock squads-block">
+        <div class="pblock-head">
+          <h2>队伍编队</h2>
+          <button class="mini-btn" id="btnAddSquad">＋ 建队</button>
+        </div>
+        <div class="squads" id="squads"></div>
+      </section>
+    </aside>
+
+    <!-- 中央地图画布 -->
+    <section class="map-stage">
+      <div class="map-toolbar">
+        <span class="tool-title">标点</span>
+        <button class="tool active" data-tool="select" title="选择 / 拖动">✥</button>
+        <button class="tool" data-tool="text" title="文字标记">文</button>
+        <button class="tool" data-tool="attack" title="集火点">⚔</button>
+        <button class="tool" data-tool="defend" title="防守点">盾</button>
+        <button class="tool" data-tool="route" title="路线箭头">➤</button>
+        <button class="tool" data-tool="area" title="责任区">◯</button>
+        <button class="tool" data-tool="monster" title="野区怪标点">怪</button>
+        <span class="divider"></span>
+        <button class="tool" data-tool="pan" title="拖动平移视图">✥</button>
+        <button class="tool" data-tool="zoom" title="框选局部放大部署">⊞</button>
+        <span class="divider"></span>
+        <button class="tool" id="btnFit" title="适应全图">⛶</button>
+        <button class="tool" id="btnMapImage" title="更换地图底图">🗺</button>
+        <button class="tool" id="btnToggleBuiltin" title="显示/隐藏内置地标">⛨</button>
+        <button class="tool" id="btnClearMarks" title="清空当前阶段标点">⌫</button>
+      </div>
+
+      <div class="map-viewport" id="mapViewport">
+        <div class="map-world" id="mapWorld">
+          <div class="map-canvas" id="mapCanvas">
+            <!-- 水墨地图底图由 SVG 注入 -->
+          </div>
+          <div class="mark-layer" id="markLayer"></div>
+          <div class="select-rect" id="selectRect" hidden></div>
+        </div>
+        <div class="hint-bar" id="mapHint">滚轮缩放 · 拖动画布平移 · ⊞框选局部放大 · 拖动人物布阵</div>
+        <div class="minimap" id="minimap" title="点击跳转 / 拖动视口框">
+          <div class="minimap-view" id="minimapView"></div>
+        </div>
+      </div>
+
+      <div class="map-legend">
+        <button class="side-toggle" id="sideToggle" title="点击切换我方阵营颜色（阵营每局随机）">
+          <i class="dot my"></i><span id="legendMy">我方</span>
+          <span class="side-swap">⇄</span>
+          <i class="dot foe"></i><span id="legendFoe">敌方</span>
+        </button>
+        <span class="side-hint">阵营随机 · 点击切换</span>
+        <span><i class="dot boss"></i>首领</span>
+        <span class="zoom">缩放 <button id="zoomOut">−</button> <b id="zoomVal">100%</b> <button id="zoomIn">＋</button> <button id="zoomReset" title="复位">复位</button></span>
+      </div>
+    </section>
+
+    <!-- 右侧属性面板 -->
+    <aside class="panel panel-right">
+      <div class="pblock prop-block" id="propPanel">
+        <div class="pblock-head"><h2>属性</h2></div>
+        <div id="propContent"></div>
+      </div>
+    </aside>
+  </main>
+
+  <!-- ===== 底部状态栏 ===== -->
+  <footer class="statusbar">
+    <span id="stScheme">方案：—</span>
+    <span id="stStage">阶段：前期</span>
+    <span id="stCoord">坐标：—</span>
+    <span class="grow"></span>
+    <span id="stCount">人物 0 · 标点 0</span>
+    <span class="status-sep"></span>
+    <span id="stStore">本地存储 · IndexedDB</span>
+  </footer>
+</div>
+
+<!-- 使用说明侧边抽屉 -->
+<div class="help-mask" id="helpMask" hidden></div>
+<aside class="help-drawer" id="helpDrawer" aria-label="使用说明">
+  <div class="help-head">
+    <h2>使用说明</h2>
+    <button class="help-close" id="helpClose" title="关闭">✕</button>
+  </div>
+  <div class="help-body">
+    <section class="help-sec">
+      <h3>① 快速上手</h3>
+      <p>默认有<b>防守队 / 机动队 / 指挥组</b>三队。<b>新建方案时会自动带入</b><b>防守队 / 进攻队 / 指挥组</b>三队与 7 名固定人物（翊翊1/2号、明川1号、八方1号、双剑1/2号、总指挥，开局站位已摆好），直接改名/换人即可用。点<b>队伍标头</b>选中它为<b>目标队</b>（高亮显示「目标」角标）后，点左侧<b>流派库</b>的人物即加入该队；再把人物<b>拖到地图</b>或<b>点左侧人物后点地图</b>布阵。在右侧属性面板改名字（如「翊翊1号」）、选流派、定队伍与本阶段意图。</p>
+      <p><b>注意</b>：点左侧人物后会进入「<b>待放</b>」状态（卡片虚线闪烁），点一次地图放下后即自动结束，<b>不会重复放置</b>。想换个位置，再点一次该人物重新「待放」再点地图，或直接拖动地图上已有的标记。按 Esc 可取消待放。</p>
+      <p>左侧人物头像右下角的<b>绿点</b>和「<b>阵</b>」标记表示该人物<b>本阶段已布阵到地图</b>；未布阵显示「—」。选中人物后，地图上对应的标点会<b>金色脉冲高亮</b>，方便定位。</p>
+    </section>
+    <section class="help-sec">
+      <h3>② 地图标点</h3>
+      <p>选中央工具栏的标点工具（文字 / 集火 / 防守 / 箭头 / 区域 / <b>怪</b>），在地图点击落点；拖动可移动，<b>双击标点可取消</b>，选中后可在右侧改名、写备注、改颜色。</p>
+      <p><b>箭头</b>支持<b>任意方向</b>：选中箭头后，拖动它<b>末端的金色圆点</b>即可自由旋转（按住 Shift 吸附 15°）；也可在右侧「箭头方向」的方位盘里点八个方向，或用滑杆、键盘 ← → 精确调整。</p>
+    </section>
+    <section class="help-sec">
+      <h3>③ 缩放与局部部署</h3>
+      <p><b>滚轮</b>以光标为中心缩放；<b>✥</b> 工具或鼠标中键拖动平移；<b>⊞</b> 工具框选一块区域局部放大，便于精细布点；右下角小地图可点击跳转。⛶ 适应全图。</p>
+    </section>
+    <section class="help-sec">
+      <h3>④ 五个阶段</h3>
+      <p>顶部切换<b>开局 / 前期 / 中期 / 后期 / 终局</b>五个阶段，每个阶段的人物站位与标点相互独立，可分别布置一套战术。</p>
+    </section>
+    <section class="help-sec">
+      <h3>⑤ 阵营与底图</h3>
+      <p>游戏每局红蓝随机，底部图例的 <b>我方⇄敌方</b> 可点击切换颜色标识。地图工具栏 <b>🗺</b> 可上传新地图截图作底图（游戏改版后换图即可，标点位置不受影响）。</p>
+    </section>
+    <section class="help-sec">
+      <h3>⑥ 流派与队伍自定义</h3>
+      <p>流派库分 <b>PVE / 邪修</b> 两类：<b>PVE</b> 为 12 个官方固定流派（含新上线的破竹·樽），<b>邪修</b> 为 6 个 PVP 混搭打法（如双剑、绳镖奶、无名九枪，标「邪修」角标），顶部两个标签可切换。<b>两类都可以</b>点列表底部 <b>＋自定义</b> 新增——新增时可选归入「PVE」还是「邪修」，自建流派带「自建」角标。悬停格子点 <b>✎</b> 可编辑名称、定位、分类与颜色（20 种明亮色）。</p>
+      <p>队伍编队：点<b>标头任意处</b>即选中该队伍为「目标」（之后点流派库加人直接进此队），同时会自动展开；点标头右侧 <b>▾/▸ 箭头</b> 单独折叠/展开；标头 <b>✎</b> 改名、<b>✕</b> 删队（<b>队内人物会一并删除</b>，可撤销）。</p>
+      <p><b>隐藏队伍</b>：标头左侧的 <b>隐</b> 按钮可把该队从地图上隐藏（只留其他队伍便于对照），隐藏后卡片变暗并显示「已隐藏」、按钮变 <b>显</b>；再点 <b>显</b> 或布阵该队人物时会自动恢复显示。隐藏只影响地图显示，队伍和人物数据都还在。</p>
+      <p>人物卡片点 <b>⇄</b> 或在右侧「所属队伍」下拉可改其队伍；卡片上的 <b>✕</b> 可快捷删除该人物（可撤销）。</p>
+      <p>配色规则：<b>地图上人物标点的颜色 = 该人物的流派颜色</b>，与左侧卡片头像同色（同流派在地图上同色）；<b>换队伍不会改变</b>标点颜色。流派/队伍的标识颜色提供 <b>20 种明亮色</b>可选。</p>
+      <p><b>队伍高亮</b>：在左侧点中某支队伍后，该队<b>所有人物标点会套上队伍色光圈</b>并缓缓呼吸，左侧该队卡片也用同色描边发光——一眼就能看出这支队伍在地图上的位置分布；切到别的队伍，光圈会跟着切换。</p>
+    </section>
+    <section class="help-sec">
+      <h3>⑦ 保存与分享</h3>
+      <p>数据<b>自动保存在本机浏览器</b>，刷新不丢。<b>导出 JSON</b> 会把方案、自定义流派、底图和阵营设置一起打包；对方<b>导入 JSON</b> 即可还原整套战术。撤销 / 重做：Ctrl+Z / Ctrl+Y。</p>
+    </section>
+  </div>
+</aside>
+
+<!-- 弹窗容器 -->
+<div class="modal-mask" id="modalMask" hidden>
+  <div class="modal" id="modal"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="map.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

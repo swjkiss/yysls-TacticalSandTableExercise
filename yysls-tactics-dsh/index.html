@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>燕云十六声 · 百业战战术板</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="app">
+
+  <!-- 顶栏 -->
+  <header class="topbar">
+    <div class="seal">燕<br>云</div>
+    <div class="brand">百业战战术板<small>SANDBOX · 30 VS 30</small></div>
+    <input class="tpl-name" id="tplName" value="未命名战术" spellcheck="false" title="模板名称">
+    <div class="save-state" id="saveState"><span class="dot"></span><span class="txt">已就绪</span></div>
+    <div class="spacer"></div>
+    <button class="btn" id="btnImport">导入</button>
+    <div class="dropdown">
+      <button class="btn btn-primary" id="btnExport">导出 ▾</button>
+      <div class="dropdown-menu" id="exportMenu">
+        <div data-act="json">导出当前模板 (.json)</div>
+        <div data-act="pack">导出模板包 (.json)</div>
+        <div data-act="clip">复制 JSON 到剪贴板</div>
+      </div>
+    </div>
+    <input type="file" id="importFile" accept=".json,application/json" hidden>
+    <div class="avatar" title="滚滚红尘">滚</div>
+  </header>
+
+  <!-- 工作区 -->
+  <div class="workspace">
+
+    <!-- 左栏 -->
+    <aside class="left">
+      <div class="panel-head">卷宗 · 编阵</div>
+      <div class="tabs">
+        <div class="tab active" data-tab="lib">模板库</div>
+        <div class="tab" data-tab="map">地图</div>
+        <div class="tab" data-tab="squad">编队</div>
+      </div>
+
+      <!-- 模板库 -->
+      <div class="tab-pane active" id="pane-lib">
+        <div class="pane-actions">
+          <button class="mini-btn" id="btnNewTpl">＋ 新建模板</button>
+          <button class="mini-btn" id="btnDelTpl">删除</button>
+        </div>
+        <div class="tree" id="tplTree"></div>
+      </div>
+
+      <!-- 地图资源 -->
+      <div class="tab-pane" id="pane-map">
+        <div class="map-res" id="mapRes"></div>
+        <div class="pane-actions">
+          <button class="mini-btn" id="btnUploadMap">＋ 上传俯视图</button>
+        </div>
+        <input type="file" id="mapFile" accept="image/*" hidden>
+        <div class="map-tip">底图用游戏内正交俯视截图：关 HUD、关标记、无特效，PNG 为佳。<br>上传后按归一化坐标叠加标点，缩放不丢位。</div>
+      </div>
+
+      <!-- 编队 -->
+      <div class="tab-pane" id="pane-squad">
+        <div class="pane-actions">
+          <button class="mini-btn" id="btnAddSquad">＋ 新建队伍</button>
+        </div>
+        <div id="squadList"></div>
+      </div>
+    </aside>
+
+    <!-- 中栏 -->
+    <main class="center">
+      <div class="canvas" id="canvas">
+        <div class="toolbar" id="toolbar">
+          <div class="tool active" data-tool="select" title="选择 (V)">✥</div>
+          <div class="tool" data-tool="point" title="据点标记 (1)">◈</div>
+          <div class="tool" data-tool="area" title="区域 (2)">▭</div>
+          <div class="tool" data-tool="path" title="路径 (3)">↗</div>
+          <div class="tool" data-tool="text" title="文字 (4)">文</div>
+          <div class="tool-sep"></div>
+          <div class="tool" data-tool="unit" title="人物标点 (5)">♟</div>
+          <div class="tool" data-tool="zone" title="作战分区 (6)">▢</div>
+          <div class="tool-sep"></div>
+          <div class="tool" data-tool="undo" title="撤销 (Ctrl+Z)">↶</div>
+          <div class="tool" data-tool="redo" title="重做 (Ctrl+Y)">↷</div>
+        </div>
+
+        <div class="map-wrap" id="mapWrap">
+          <img class="real-map" id="realMap" alt="底图">
+          <div class="empty-map" id="emptyMap">
+            <div class="em-seal">阵</div>
+            <div class="em-t">尚无底图</div>
+            <div class="em-s">在左栏「地图」上传百业战真实俯视图</div>
+          </div>
+          <svg class="vector-layer" id="vectorLayer" viewBox="0 0 1000 1000" preserveAspectRatio="none"></svg>
+          <div class="marker-layer" id="markerLayer"></div>
+        </div>
+      </div>
+
+      <div class="minimap" id="minimap" hidden>
+        <div class="mt">全图导览</div>
+        <div class="mini-inner" id="miniInner"><div class="viewport" id="viewport"></div></div>
+      </div>
+
+      <div class="canvas-help">滚轮缩放 · 空格+拖拽平移 · 点击空白取消选中 · Delete 删除</div>
+    </main>
+
+    <!-- 右栏 -->
+    <aside class="right">
+      <div class="panel-head">属性 · 注释</div>
+      <div class="inspector" id="inspector">
+        <div class="no-sel">未选中对象<br><small>点击地图标点或列表项编辑属性</small></div>
+      </div>
+      <div class="notes-block">
+        <div class="nb-title">战术备注</div>
+        <textarea id="notes" placeholder="记录打法要点、集火顺序、职责分工……"></textarea>
+      </div>
+    </aside>
+  </div>
+
+  <!-- 底栏 -->
+  <footer class="statusbar">
+    <div class="coord-switch" id="coordSwitch"><span class="on" data-c="px">像素</span><span data-c="norm">归一化</span><span data-c="game">游戏内</span></div>
+    <div class="coord-val" id="coordVal">X — &nbsp; Y —</div>
+    <div class="sep"></div>
+    <div>缩放 <span class="coord-val" id="zoomVal">100%</span></div>
+    <div class="sep"></div>
+    <div>对象 <span class="coord-val" id="objCount">0</span></div>
+    <div class="spacer"></div>
+    <div id="hintText">就绪</div>
+  </footer>
+</div>
+
+<script src="js/store.js"></script>
+<script src="js/board.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

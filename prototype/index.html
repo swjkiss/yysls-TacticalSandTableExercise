@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>百业沙盘 · 燕云十六声百业战战术模板</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%231F2420'/%3E%3Crect x='3' y='3' width='26' height='26' fill='none' stroke='%23B08A45'/%3E%3Ctext x='16' y='23' font-size='18' text-anchor='middle' fill='%23B08A45' font-family='serif'%3E百%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+
+<svg class="icon-sprite" aria-hidden="true">
+  <symbol id="i-plus" viewBox="0 0 16 16"><path d="M8 3v10M3 8h10"/></symbol>
+  <symbol id="i-download" viewBox="0 0 16 16"><path d="M8 2v8m0 0L5 7m3 3l3-3M3 13.5h10"/></symbol>
+  <symbol id="i-upload" viewBox="0 0 16 16"><path d="M8 12V4m0 0L5 7m3-3l3 3M3 13.5h10"/></symbol>
+  <symbol id="i-help" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6"/><path d="M6.2 6.2a1.9 1.9 0 113.1 1.5c-.8.6-1.3 1-1.3 2"/><path d="M8 11.8h.01"/></symbol>
+  <symbol id="i-undo" viewBox="0 0 16 16"><path d="M3 6.5h7a3.2 3.2 0 010 6.4H7.5"/><path d="M5.8 3.8L3 6.5l2.8 2.7"/></symbol>
+  <symbol id="i-redo" viewBox="0 0 16 16"><path d="M13 6.5H6a3.2 3.2 0 000 6.4h2.5"/><path d="M10.2 3.8L13 6.5l-2.8 2.7"/></symbol>
+  <symbol id="i-search" viewBox="0 0 16 16"><circle cx="7" cy="7" r="4.2"/><path d="M10.2 10.2L14 14"/></symbol>
+  <symbol id="i-sort" viewBox="0 0 16 16"><path d="M4 3v10M2 11l2 2 2-2M8 4h6M8 8h4M8 12h2"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 16 16"><path d="M1.5 8s2.4-4 6.5-4 6.5 4 6.5 4-2.4 4-6.5 4S1.5 8 1.5 8z"/><circle cx="8" cy="8" r="1.8"/></symbol>
+  <symbol id="i-eye-off" viewBox="0 0 16 16"><path d="M2.5 3.5l11 9"/><path d="M4.6 4.9C2.7 6.1 1.5 8 1.5 8s2.4 4 6.5 4c1.2 0 2.2-.3 3.1-.8"/><path d="M6.6 5.2A2 2 0 0110 7.4"/><path d="M12.2 6.2c1.2 1 1.8 1.8 1.8 1.8s-2.4 4-6.5 4"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 16 16"><path d="M2.5 4.5h11M6 4.5V2.8h4v1.7M4.2 4.5l.7 9.2h6.2l.7-9.2M6.6 7v4.4M9.4 7v4.4"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 16 16"><rect x="5.5" y="5.5" width="8" height="8" rx="1"/><path d="M10.5 3.5v-1h-8v8h1"/></symbol>
+  <symbol id="i-close" viewBox="0 0 16 16"><path d="M4 4l8 8M12 4l-8 8"/></symbol>
+  <symbol id="i-check" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3.2L13 5"/></symbol>
+  <symbol id="i-minus" viewBox="0 0 16 16"><path d="M3 8h10"/></symbol>
+  <symbol id="i-expand" viewBox="0 0 16 16"><path d="M6 2.5H2.5V6M10 2.5h3.5V6M6 13.5H2.5V10M10 13.5h3.5V10"/></symbol>
+  <symbol id="i-target" viewBox="0 0 16 16"><circle cx="8" cy="8" r="5.2"/><circle cx="8" cy="8" r="1.6"/><path d="M8 1v2.2M8 12.8V15M1 8h2.2M12.8 8H15"/></symbol>
+  <symbol id="i-map" viewBox="0 0 16 16"><path d="M2 3.2l4-1.2 4 1.2 4-1.2v10.8l-4 1.2-4-1.2-4 1.2z"/><path d="M6 2v10.8M10 3.2v10.8"/></symbol>
+  <symbol id="i-layers" viewBox="0 0 16 16"><path d="M8 2l6 3-6 3-6-3z"/><path d="M2 8l6 3 6-3M2 11l6 3 6-3"/></symbol>
+  <symbol id="i-tag" viewBox="0 0 16 16"><path d="M2.5 2.5h5l6 6-5 5-6-6z"/><circle cx="5.4" cy="5.4" r="1"/></symbol>
+  <symbol id="i-edit" viewBox="0 0 16 16"><path d="M10.5 2.5l3 3-7.5 7.5-3.5.5.5-3.5z"/></symbol>
+  <symbol id="i-arrow-left" viewBox="0 0 16 16"><path d="M13 8H3m0 0l4-4M3 8l4 4"/></symbol>
+  <symbol id="i-arrow-right" viewBox="0 0 16 16"><path d="M3 8h10m0 0l-4-4m4 4l-4 4"/></symbol>
+  <symbol id="i-hand" viewBox="0 0 16 16"><path d="M5.3 8V4.1a1 1 0 012 0V7m0-3.2a1 1 0 012 0V7m0-2.6a1 1 0 012 0V8m0-2a1 1 0 012 0v3.2c0 2.7-1.7 4.6-4.4 4.6-2 0-3-1-4-2.6L3.2 9.1a1 1 0 011.5-1.3L5.3 8"/></symbol>
+  <symbol id="i-cursor" viewBox="0 0 16 16"><path d="M4 2l8 6-3.7.9L6.8 13z"/></symbol>
+  <symbol id="i-pin" viewBox="0 0 16 16"><path d="M8 14.2s4.6-4.3 4.6-8A4.6 4.6 0 003.4 6.2c0 3.7 4.6 8 4.6 8z"/><circle cx="8" cy="6.2" r="1.6"/></symbol>
+  <symbol id="i-users" viewBox="0 0 16 16"><circle cx="6" cy="5" r="2.2"/><path d="M2.4 13.2c0-2.1 1.6-3.6 3.6-3.6s3.6 1.5 3.6 3.6"/><path d="M10.4 3.2a2.2 2.2 0 010 4.2M11.4 9.9c1.4.4 2.3 1.6 2.3 3.3"/></symbol>
+  <symbol id="i-route" viewBox="0 0 16 16"><circle cx="3.2" cy="12.8" r="1.4"/><circle cx="12.8" cy="3.2" r="1.4"/><path d="M4.4 11.6c1.8-1.8.4-3.2 2-4.8s3-.2 4.6-2" stroke-dasharray="2.2 2"/></symbol>
+  <symbol id="i-text" viewBox="0 0 16 16"><path d="M3 3h10M8 3v10M5.6 13h4.8"/></symbol>
+  <symbol id="i-sector" viewBox="0 0 16 16"><path d="M2.5 2.5h11v11h-11z" stroke-dasharray="2.6 2"/><path d="M8 5.5v5M5.5 8h5"/></symbol>
+  <symbol id="i-map-pin" viewBox="0 0 16 16"><path d="M8 14.2s4.6-4.3 4.6-8A4.6 4.6 0 003.4 6.2c0 3.7 4.6 8 4.6 8z"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 16 16"><path d="M13 8a5 5 0 11-1.6-3.7"/><path d="M13 2.5V5h-2.5"/></symbol>
+</svg>
+
+<header class="topbar" id="topbar">
+  <div class="brand">
+    <div class="brand-seal">業</div>
+    <div class="brand-text">
+      <span class="brand-name">百业沙盘</span>
+      <span class="brand-sub">BAIYE TACTICS · YANYUN</span>
+    </div>
+  </div>
+  <nav class="topnav">
+    <a class="nav-item active" href="#/library">模板库</a>
+    <a class="nav-item" href="#" id="nav-editor-link">战术编辑</a>
+  </nav>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-actions">
+    <button class="tb-btn" id="btn-help">
+      <svg class="ico"><use href="#i-help"/></svg>操作指南</button>
+    <button class="tb-btn" id="btn-import">
+      <svg class="ico"><use href="#i-upload"/></svg>导入 JSON</button>
+    <button class="tb-btn primary" id="btn-new">
+      <svg class="ico"><use href="#i-plus"/></svg>新建模板</button>
+  </div>
+</header>
+
+<main id="view-library" class="library">
+  <aside class="rail">
+    <div class="rail-head">
+      <span class="eyebrow">TACTIC TEMPLATES</span>
+      <h2>模板分类</h2>
+      <span class="sub">按战场阶段归档 · 本地保存</span>
+    </div>
+    <div class="cats" id="cat-list" role="tablist" aria-label="模板分类"></div>
+    <button class="cat-add" id="btn-add-cat">
+      <svg class="ico"><use href="#i-plus"/></svg>新建分类</button>
+    <div class="rail-note">
+      <div class="seal-sm">藏</div>
+      <p>全部模板仅保存在当前浏览器。重要战术请定期导出 JSON 备份。</p>
+    </div>
+    <div class="rail-version"><span>SCHEMA v1</span><span>LOCAL ONLY</span></div>
+  </aside>
+
+  <section class="lib-main">
+    <header class="lib-head">
+      <div class="lib-title-block">
+        <div class="eyebrow">燕云十六声 · 百业战 30v30</div>
+        <h1 class="lib-title" id="lib-title">战术模板库</h1>
+        <p class="lib-lede" id="lib-lede">以一张可替换的战场底图为画布，标点、布阵、画路线，把“谁去哪里、什么时候去”讲清楚。</p>
+      </div>
+      <div class="lib-stats" id="lib-stats"></div>
+      <div class="seal-big" aria-hidden="true"><span class="txt">百業</span></div>
+    </header>
+
+    <div class="lib-tools">
+      <label class="searchbox">
+        <svg class="ico"><use href="#i-search"/></svg>
+        <input type="search" id="lib-search" placeholder="搜索模板、描述、标签或人物名" autocomplete="off">
+        <span class="kbd">/</span>
+      </label>
+      <label class="sortbox">
+        <svg class="ico"><use href="#i-sort"/></svg>
+        <select id="lib-sort" aria-label="排序方式">
+          <option value="recent">最近更新</option>
+          <option value="name">名称升序</option>
+          <option value="created">创建时间倒序</option>
+        </select>
+      </label>
+      <div class="tools-spacer"></div>
+      <span class="result-meta" id="lib-result-meta"></span>
+    </div>
+
+    <div id="lib-error" class="load-error" hidden>
+      <div class="load-error-title">本地数据读取失败</div>
+      <p>浏览器中的模板数据可能已损坏。你可以重试读取，或以空白模板库继续。</p>
+      <div class="load-error-actions">
+        <button class="btn" id="btn-reload">重新读取</button>
+        <button class="btn ghost" id="btn-reset-data">以空库继续</button>
+      </div>
+    </div>
+
+    <div class="card-grid" id="card-grid"></div>
+
+    <div class="lib-empty" id="lib-empty" hidden>
+      <div class="empty-seal" aria-hidden="true">空</div>
+      <h2 id="empty-title">还没有战术模板</h2>
+      <p id="empty-desc">新建一个模板，选择一张底图，从第一个集合点开始。</p>
+      <div class="empty-actions">
+        <button class="btn primary" id="btn-empty-new">新建模板</button>
+        <button class="btn" id="btn-empty-clear" hidden>清除筛选</button>
+      </div>
+    </div>
+  </section>
+</main>
+
+<section id="view-editor" class="editor" hidden>
+  <header class="ed-head">
+    <button class="back-btn" id="ed-back">
+      <svg class="ico"><use href="#i-arrow-left"/></svg>模板库</button>
+    <div class="ed-divider"></div>
+    <div class="ed-title-block">
+      <span class="eyebrow">TACTIC EDITOR · <span id="ed-category">开局布防</span></span>
+      <div class="ed-title-row">
+        <h2 id="ed-title" title="点击重命名">未命名模板</h2>
+        <span class="ed-badge" id="ed-map-badge">官方战场图</span>
+        <span class="save-state" id="save-state"><i class="pulse"></i><span>已保存</span></span>
+      </div>
+    </div>
+    <div class="ed-head-spacer"></div>
+    <div class="ed-actions">
+      <button class="icon-btn" id="btn-undo" title="撤销 (Ctrl+Z)" aria-label="撤销">
+        <svg class="ico"><use href="#i-undo"/></svg></button>
+      <button class="icon-btn" id="btn-redo" title="重做 (Ctrl+Shift+Z)" aria-label="重做">
+        <svg class="ico"><use href="#i-redo"/></svg></button>
+      <div class="ed-divider"></div>
+      <button class="icon-btn" id="btn-toggle-left" title="折叠左栏" aria-label="折叠左栏">
+        <svg class="ico"><use href="#i-layers"/></svg></button>
+      <button class="icon-btn" id="btn-toggle-right" title="折叠右栏" aria-label="折叠右栏">
+        <svg class="ico"><use href="#i-users"/></svg></button>
+      <div class="ed-divider"></div>
+      <button class="btn" id="btn-help-ed">
+        <svg class="ico"><use href="#i-help"/></svg>帮助</button>
+      <button class="btn" id="btn-import-ed">
+        <svg class="ico"><use href="#i-upload"/></svg>导入</button>
+      <button class="btn primary" id="btn-export">
+        <svg class="ico"><use href="#i-download"/></svg>导出 JSON</button>
+    </div>
+  </header>
+
+  <div class="ed-body" id="ed-body">
+    <aside class="side-left" id="side-left">
+      <section class="panel-block">
+        <div class="panel-head">
+          <div class="row"><h3>模板信息</h3><span class="count" id="ti-count">0 人</span></div>
+        </div>
+        <label class="field">
+          <span>分类</span>
+          <select id="ti-category"></select>
+        </label>
+        <div class="field-row">
+          <span>底图</span>
+          <b id="ti-map">官方战场图</b>
+          <button class="link-btn" id="btn-change-map">更换</button>
+        </div>
+        <label class="field">
+          <span>描述</span>
+          <textarea id="ti-desc" maxlength="200" rows="2" placeholder="这场战术的目标与注意点"></textarea>
+          <small class="counter" id="ti-desc-count">0 / 200</small>
+        </label>
+        <div class="field">
+          <span>标签</span>
+          <div class="tag-editor" id="ti-tags"></div>
+          <input class="tag-input" id="ti-tag-input" maxlength="10" placeholder="输入后回车，最多 5 个">
+        </div>
+      </section>
+
+      <section class="panel-block">
+        <div class="panel-head">
+          <div class="row"><h3>图层</h3><span class="count">LAYERS</span></div>
+        </div>
+        <div class="layers" id="layer-list"></div>
+      </section>
+
+      <section class="panel-block map-note">
+        <div class="panel-head">
+          <div class="row"><h3>底图</h3><span class="count">MAP</span></div>
+        </div>
+        <p class="map-name" id="map-note-name">百业战 · 官方战场图</p>
+        <p class="muted" id="map-note-size">1410 × 1191</p>
+        <p class="note-small">底图可替换。标点使用 0–1 归一化坐标，换图后位置按比例保留。</p>
+        <div class="btn-row">
+          <button class="btn block" id="btn-change-map-2">
+            <svg class="ico"><use href="#i-map"/></svg>更换底图</button>
+          <button class="btn ghost block" id="btn-reset-map">恢复默认</button>
+        </div>
+      </section>
+    </aside>
+
+    <main class="stage-wrap">
+      <div class="stage" id="stage">
+        <div class="map-world" id="map-world">
+          <img id="map-img" alt="百业战战场底图" draggable="false">
+          <div class="map-veil"></div>
+          <svg class="route-svg" id="route-svg" aria-hidden="true"></svg>
+          <div class="obj-layer" id="obj-layer"></div>
+        </div>
+        <div class="stage-overlay">
+          <div class="view-crumb" id="view-crumb" hidden>
+            <span class="crumb-txt" id="crumb-txt">局部视图 · 上路 · 200%</span>
+            <button class="crumb-back" id="btn-back-full">返回全图</button>
+          </div>
+          <div class="stage-tools" id="stage-tools" role="toolbar" aria-label="编辑工具">
+            <button class="tool active" data-tool="select" title="选择 (V)">
+              <svg class="ico"><use href="#i-cursor"/></svg>选择<span class="kbd">V</span></button>
+            <button class="tool" data-tool="pan" title="抓手 (H / 空格)">
+              <svg class="ico"><use href="#i-hand"/></svg>抓手<span class="kbd">H</span></button>
+            <button class="tool" data-tool="marker" title="标点 (M)">
+              <svg class="ico"><use href="#i-pin"/></svg>标点<span class="kbd">M</span></button>
+            <button class="tool" data-tool="character" title="添加流派人物 (C)">
+              <svg class="ico"><use href="#i-users"/></svg>人物<span class="kbd">C</span></button>
+            <button class="tool" data-tool="route" title="路线 (R)">
+              <svg class="ico"><use href="#i-route"/></svg>路线<span class="kbd">R</span></button>
+            <button class="tool" data-tool="text" title="文字 (T)">
+              <svg class="ico"><use href="#i-text"/></svg>文字<span class="kbd">T</span></button>
+            <span class="tool-sep"></span>
+            <button class="tool" data-tool="sector" title="局部部署 (Z)">
+              <svg class="ico"><use href="#i-sector"/></svg>局部部署<span class="kbd">Z</span></button>
+          </div>
+          <div class="stage-tags" id="stage-tags"></div>
+          <div class="stage-hint" id="stage-hint"></div>
+          <div class="sector-rect" id="sector-rect" hidden>
+            <span class="sector-tag" id="sector-tag">局部部署</span>
+            <i class="corner tl"></i><i class="corner tr"></i><i class="corner bl"></i><i class="corner br"></i>
+          </div>
+          <div class="selection-rect" id="selection-rect" hidden></div>
+          <div class="readonly-banner" id="readonly-banner" hidden>
+            <b>只读查看</b> 窗口宽度低于 1024px，请使用桌面端编辑。
+          </div>
+          <div class="map-error" id="map-error" hidden>
+            <div class="map-error-mark">缺</div>
+            <h3>地图加载失败</h3>
+            <p>底图资源缺失或无法读取。已保存的标点不会丢失，可更换底图后继续。</p>
+            <div class="map-error-actions">
+              <button class="btn primary" id="btn-map-error-change">更换底图</button>
+              <button class="btn ghost" id="btn-map-error-reset">恢复默认</button>
+            </div>
+          </div>
+          <div class="mk-picker" id="mk-picker" hidden></div>
+        </div>
+      </div>
+    </main>
+
+    <aside class="side-right" id="side-right">
+      <div class="side-tabs" id="side-tabs" role="tablist">
+        <button class="stab active" data-tab="roster">花名册<span class="n" id="tab-roster-count">0</span></button>
+        <button class="stab" data-tab="props">属性</button>
+        <button class="stab" data-tab="legend">图例</button>
+      </div>
+
+      <div class="side-pane" id="pane-roster">
+        <div class="pane-head">
+          <span class="eyebrow">ROSTER</span>
+          <button class="mini-btn primary" id="btn-add-character">
+            <svg class="ico"><use href="#i-plus"/></svg>添加人物</button>
+        </div>
+        <div class="roster-tools">
+          <label class="searchbox small">
+            <svg class="ico"><use href="#i-search"/></svg>
+            <input type="search" id="roster-search" placeholder="搜索人物或流派" autocomplete="off">
+          </label>
+        </div>
+        <div class="camp-tabs" id="roster-filters">
+          <button class="camp-tab active" data-camp="all">全部<span id="rc-all">0</span></button>
+          <button class="camp-tab" data-camp="ally">我方<span id="rc-ally">0</span></button>
+          <button class="camp-tab" data-camp="enemy">敌方<span id="rc-enemy">0</span></button>
+          <button class="camp-tab" data-camp="neutral">中立<span id="rc-neutral">0</span></button>
+        </div>
+        <div class="roster-list" id="roster-list"></div>
+        <div class="roster-foot">
+          点击花名册将选中并居中地图；眼睛图标控制地图上的显隐。
+        </div>
+      </div>
+
+      <div class="side-pane" id="pane-props" hidden></div>
+      <div class="side-pane" id="pane-legend" hidden></div>
+    </aside>
+  </div>
+
+  <footer class="statusbar">
+    <div class="zoom-group">
+      <button class="zbtn" id="btn-zoom-out" title="缩小" aria-label="缩小">
+        <svg class="ico"><use href="#i-minus"/></svg></button>
+      <span class="zoom-val" id="zoom-val">100%</span>
+      <button class="zbtn" id="btn-zoom-in" title="放大" aria-label="放大">
+        <svg class="ico"><use href="#i-plus"/></svg></button>
+      <input class="zoom-range" type="range" id="zoom-range" min="25" max="400" step="1" value="100" aria-label="缩放比例">
+      <button class="fit-btn" id="btn-fit">适应窗口</button>
+    </div>
+    <div class="status-sep"></div>
+    <label class="snap-control">吸附
+      <select id="snap-select">
+        <option value="8" selected>8px</option>
+        <option value="16">16px</option>
+        <option value="0">关闭</option>
+      </select>
+    </label>
+    <div class="status-sep"></div>
+    <div class="status-note">对象 <b id="st-objects">0</b> · 人物 <b id="st-chars">0</b> · 标点 <b id="st-markers">0</b></div>
+    <div class="status-sep"></div>
+    <div class="status-note coord" id="st-coord">X — &nbsp; Y —</div>
+    <div class="status-spacer"></div>
+    <div class="key-hint"><span class="k">Z</span>局部部署</div>
+    <div class="status-note" id="st-map">底图 —</div>
+    <div class="status-note" id="st-save">已保存</div>
+  </footer>
+</section>
+
+<div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+<aside class="drawer" id="help-drawer" aria-hidden="true">
+  <div class="drawer-head">
+    <div>
+      <span class="eyebrow">MANUAL</span>
+      <h2>操作指南</h2>
+    </div>
+    <button class="icon-btn" id="btn-help-close" aria-label="关闭">
+      <svg class="ico"><use href="#i-close"/></svg></button>
+  </div>
+  <div class="drawer-body">
+    <section>
+      <h3>一分钟上手</h3>
+      <ol>
+        <li>在模板库新建模板，填写名称、分类与底图。</li>
+        <li>用顶部工具栏放置标点、添加流派人物、画路线或写文字。</li>
+        <li>选中对象后在右侧“属性”里改名称、颜色、状态与备注。</li>
+        <li>按 <span class="kbd">Z</span> 框选一块区域放大，精细摆位；点“返回全图”或按 <span class="kbd">0</span> 回到全局。</li>
+        <li>内容会自动保存到当前浏览器，重要版本用“导出 JSON”留档。</li>
+      </ol>
+    </section>
+    <section>
+      <h3>快捷键</h3>
+      <table class="shortcut-table">
+        <tr><td><span class="kbd">V</span></td><td>选择工具</td></tr>
+        <tr><td><span class="kbd">H</span> / <span class="kbd">空格</span></td><td>抓手平移</td></tr>
+        <tr><td><span class="kbd">M</span></td><td>放置标点</td></tr>
+        <tr><td><span class="kbd">C</span></td><td>添加流派人物</td></tr>
+        <tr><td><span class="kbd">R</span></td><td>画路线</td></tr>
+        <tr><td><span class="kbd">T</span></td><td>放置文字</td></tr>
+        <tr><td><span class="kbd">Z</span></td><td>局部部署框选</td></tr>
+        <tr><td><span class="kbd">Delete</span></td><td>删除选中对象</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Z</span></td><td>撤销</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">Shift</span>+<span class="kbd">Z</span></td><td>重做</td></tr>
+        <tr><td><span class="kbd">Ctrl</span>+<span class="kbd">D</span></td><td>复制并偏移 16px</td></tr>
+        <tr><td><span class="kbd">+</span> / <span class="kbd">−</span></td><td>缩放</td></tr>
+        <tr><td><span class="kbd">0</span></td><td>适应窗口 / 返回全图</td></tr>
+        <tr><td><span class="kbd">Esc</span></td><td>取消绘制 / 取消选择 / 关闭弹窗</td></tr>
+      </table>
+    </section>
+    <section>
+      <h3>底图替换</h3>
+      <p>“底图”区块可选择已登记的底图，或上传 JPG/PNG/WebP。上传图片会自动压缩后保存在当前浏览器。</p>
+      <p>所有对象坐标按 0–1 归一化保存。更换底图只改变背景图，不会移动已放置的标点与人物；不同地图的视觉比例差异需要你自行微调。</p>
+      <p>模板会记下所使用的底图 ID。换到没有该底图的浏览器时，会自动回退到默认底图并给出提示。</p>
+    </section>
+    <section>
+      <h3>保存与分享</h3>
+      <p>编辑内容自动保存在浏览器 localStorage，不登录、不上传服务器。清理浏览器数据会丢失模板，请定期导出 JSON。</p>
+      <p>导入的 JSON 会先校验格式、版本、字段与数量上限，再让你选择“作为新模板”或“覆盖现有模板”。</p>
+    </section>
+  </div>
+</aside>
+
+<div class="toast-root" id="toast-root" aria-live="polite"></div>
+
+<div class="save-banner" id="save-banner" hidden>
+  <span>自动保存失败，最近的改动可能没有写入浏览器。</span>
+  <div class="save-banner-actions">
+    <button class="btn" id="btn-save-retry">重试</button>
+    <button class="btn ghost" id="btn-save-export">导出备份</button>
+    <button class="icon-btn" id="btn-save-dismiss" aria-label="关闭">
+      <svg class="ico"><use href="#i-close"/></svg></button>
+  </div>
+</div>
+
+<div id="modal-root"></div>
+
+<input type="file" id="import-file" accept=".json,application/json" hidden>
+<input type="file" id="map-file" accept="image/jpeg,image/png,image/webp" hidden>
+
+<script src="app.js"></script>
+</body>
+</html>
