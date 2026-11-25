@@ -251,8 +251,41 @@ function save(silent){
   try{
     localStorage.setItem(STORE_KEY, JSON.stringify(state));
     setSaveState(false);
+    broadcastState();
     if(!silent) toast('已保存到本地');
   }catch(e){ setSaveState(true,true); toast('保存失败：存储空间不足','error'); }
+}
+
+/* ---------- 同一台电脑上的多窗口实时同步（不联网，走 BroadcastChannel） ---------- */
+const SYNC_CH='byz_board_sync';
+let syncBus=null, syncApplying=false, syncTimer=null;
+function setupLiveSync(){
+  if(typeof BroadcastChannel!=='function') return;
+  try{ syncBus=new BroadcastChannel(SYNC_CH); }catch(e){ return; }
+  syncBus.onmessage=ev=>{
+    const d=ev.data;
+    if(!d||d.type!=='state'||!d.state||!Array.isArray(d.state.schemes)||syncApplying) return;
+    syncApplying=true;
+    try{
+      state=d.state;
+      if(!state.schemes.some(s=>s.id===state.currentSchemeId)) state.currentSchemeId=state.schemes[0].id;
+      if(selected&&selected.kind==='fighter'&&!scheme().fighters.some(f=>f.id===selected.id)) selected=null;
+      if(selected&&selected.kind==='pin'&&!(scheme().pins[currentStage]||[]).some(p=>p.id===selected.id)) selected=null;
+      if(!scheme().squads.some(sq=>sq.id===selectedSquad)) selectedSquad=scheme().squads[0]?.id||null;
+      try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){}
+      renderAll(); setSaveState(false);
+      toast('已同步另一窗口的修改');
+    }finally{
+      setTimeout(()=>{ syncApplying=false; },100);
+    }
+  };
+}
+function broadcastState(){
+  if(!syncBus||syncApplying) return;
+  clearTimeout(syncTimer);
+  syncTimer=setTimeout(()=>{
+    try{ syncBus.postMessage({ type:'state', state, at:Date.now() }); }catch(e){}
+  },220);
 }
 function setSaveState(saving, fail){
   const el = $('#saveState');
@@ -1271,47 +1304,318 @@ function setupTop(){
   setupImportExport();
 }
 
-/* ---------- 导入 / 导出 JSON ---------- */
-function setupImportExport(){
-  $('#btnExport').onclick=()=>{
-    // 打包：方案 + 流派库（自定义流派随分享一起带走）
-    const payload={ format:'byz-tactics', version:2, scheme:scheme(), schools:state.schools, map:state.map||null, side:state.side };
-    const data=JSON.stringify(payload,null,2);
-    const blob=new Blob([data],{type:'application/json'});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement('a');
-    a.href=url; a.download=`${scheme().name}_${new Date().toISOString().slice(0,10)}.json`;
-    a.click(); URL.revokeObjectURL(url);
-    toast('已导出战术方案 + 流派库 JSON');
+/* ---------- 导入 / 导出 / 分享 ---------- */
+
+/* 打包当前方案（含流派库；底图体积大，按需带上） */
+function buildExportPayload(withMap){
+  return { format:'byz-tactics', version:2, scheme:scheme(), schools:state.schools,
+           map: withMap ? (state.map||null) : null, side:state.side };
+}
+function downloadBlob(blob, name){
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  a.href=url; a.download=name; a.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+function exportJsonFile(){
+  const data=JSON.stringify(buildExportPayload(true),null,2);
+  downloadBlob(new Blob([data],{type:'application/json'}),
+    `${scheme().name}_${new Date().toISOString().slice(0,10)}.json`);
+  toast('已导出战术方案 + 流派库 JSON');
+}
+
+/* 把一份载荷合进本地数据（文件导入与分享链接共用），返回落地后的方案 */
+function importPayload(raw, suffix){
+  const d = raw.scheme || raw;
+  if(!d || !Array.isArray(d.squads) || !Array.isArray(d.fighters)) throw new Error('结构不符');
+  const originId = raw.originId || d.originId || d.id || null;   // 记住它从哪份方案来的，便于下次识别同源
+  if(!d.pins) d.pins = emptyPins();
+  STAGE_ORDER.forEach(st=>{ if(!Array.isArray(d.pins[st])) d.pins[st]=[]; });
+  d.fighters.forEach(f=>{
+    if(!f.marks) f.marks = emptyMarks();
+    STAGE_ORDER.forEach(st=>{ if(!(st in f.marks)) f.marks[st]=null; });
+  });
+  // 合并流派库：按 id 覆盖/追加，保留本地未冲突项
+  if(Array.isArray(raw.schools) && raw.schools.length){
+    const map=new Map(state.schools.map(s=>[s.id,s]));
+    raw.schools.forEach(s=>{ if(s&&s.id) map.set(s.id,s); });
+    state.schools=Array.from(map.values());
+  }
+  if(raw.side==='red'||raw.side==='blue') state.side=raw.side;
+  if(raw.map&&raw.map.dataUrl) state.map=raw.map;
+  d.id=uid('sch');
+  d.originId=originId;
+  d.name=(d.name||'分享方案')+(suffix||'');
+  d.updatedAt=Date.now();
+  state.schemes.push(d);
+  state.currentSchemeId=d.id;
+  selected=null; pendingPlace=null;
+  selectedSquad=d.squads[0]?d.squads[0].id:null;
+  commit();
+  return d;
+}
+
+/* --- 同源识别与合并：不靠服务器，也能把两个人分别改的合到一份里 --- */
+function sharedOriginId(raw){
+  const d = raw.scheme || raw;
+  return raw.originId || d.originId || d.id || null;
+}
+function findSameOrigin(raw){
+  const oid = sharedOriginId(raw);
+  if(!oid) return null;
+  return state.schemes.find(s=>s.id===oid || s.originId===oid) || null;
+}
+/* 合并规则：以本机为底，把对方多出来的队伍/人物/标点/流派补进来；同一个对象保留本机版本 */
+function mergeInto(dst, raw){
+  const src = raw.scheme || raw;
+  const stat = { squads:0, fighters:0, pins:0, schools:0, kept:0 };
+  const sqIds = new Set(dst.squads.map(s=>s.id));
+  (src.squads||[]).forEach(sq=>{
+    if(!sqIds.has(sq.id)){ dst.squads.push(sq); stat.squads++; } else stat.kept++;
+  });
+  const fIds = new Set(dst.fighters.map(f=>f.id));
+  (src.fighters||[]).forEach(f=>{
+    if(!fIds.has(f.id)){ dst.fighters.push(f); stat.fighters++; } else stat.kept++;
+  });
+  if(!dst.pins) dst.pins = emptyPins();
+  STAGE_ORDER.forEach(st=>{
+    if(!Array.isArray(dst.pins[st])) dst.pins[st]=[];
+    const ids = new Set(dst.pins[st].map(p=>p.id));
+    ((src.pins&&src.pins[st])||[]).forEach(p=>{
+      if(!ids.has(p.id)){ dst.pins[st].push(p); stat.pins++; } else stat.kept++;
+    });
+  });
+  if(Array.isArray(raw.schools)){
+    const have = new Set(state.schools.map(s=>s.id));
+    raw.schools.forEach(s=>{ if(s&&s.id&&!have.has(s.id)){ state.schools.push(s); stat.schools++; } });
+  }
+  dst.updatedAt = Date.now();
+  return stat;
+}
+
+/* --- 分享码：JSON → deflate → base64url（不接受网络，纯前端编解码） --- */
+const SHARE_FORMAT='byz-share';
+const B64U={
+  enc(bytes){
+    let s='';
+    for(let i=0;i<bytes.length;i++) s+=String.fromCharCode(bytes[i]);
+    return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+  },
+  dec(str){
+    const s=String(str).replace(/-/g,'+').replace(/_/g,'/');
+    const bin=atob(s+'='.repeat((4-s.length%4)%4));
+    const out=new Uint8Array(bin.length);
+    for(let i=0;i<bin.length;i++) out[i]=bin.charCodeAt(i);
+    return out;
+  }
+};
+async function packShare(obj){
+  const bytes=new TextEncoder().encode(JSON.stringify(obj));
+  if(typeof CompressionStream==='function'){
+    try{
+      const r=new Response(new Blob([bytes]).stream().pipeThrough(new CompressionStream('deflate-raw')));
+      return '1'+B64U.enc(new Uint8Array(await r.arrayBuffer()));
+    }catch(e){ /* 环境不支持时退回不压缩 */ }
+  }
+  return '0'+B64U.enc(bytes);
+}
+async function unpackShare(code){
+  const mode=String(code).slice(0,1), body=String(code).slice(1);
+  const bytes=B64U.dec(body);
+  if(mode==='1'){
+    const r=new Response(new Blob([bytes]).stream().pipeThrough(new DecompressionStream('deflate-raw')));
+    return JSON.parse(new TextDecoder().decode(await r.arrayBuffer()));
+  }
+  return JSON.parse(new TextDecoder().decode(bytes));
+}
+function sharePayload(){
+  return { format:SHARE_FORMAT, v:1, name:scheme().name, originId:scheme().originId||scheme().id,
+           scheme:scheme(), schools:state.schools, side:state.side, ts:Date.now(),
+           hasCustomMap:!!(state.map&&state.map.dataUrl) };
+}
+
+/* 分享弹窗：一条链接 + 一个文件 */
+async function shareModal(){
+  const isFile = location.protocol==='file:';
+  const sc = scheme();
+  const pinN = Object.values(sc.pins).reduce((a,b)=>a+b.length,0);
+  $('#modal').className='modal wide';
+  $('#modal').innerHTML=`
+    <h3>分享战术板</h3>
+    <p class="share-lead">把《<b>${esc(sc.name)}</b>》连同流派库打包成一条链接。对方打开后能看到同一张战术板：<b>存成自己的副本</b>单独改，或者<b>合并回同一份</b>——两边新增的队伍、人物、标点会并到一起。</p>
+    ${isFile?`<div class="share-notice">当前是用<b>本地文件</b>打开的，这条链接只在你这台电脑上有效。发给队友请用下面的「下载分享文件」，或把战术板发布到网上后，链接才能直接打开。</div>`:''}
+    <div class="field">
+      <label>分享链接</label>
+      <div class="share-row">
+        <input id="shareUrl" readonly value="正在压缩…">
+        <button class="btn" id="shareCopy">复制链接</button>
+      </div>
+      <div class="share-hint" id="shareHint"></div>
+    </div>
+    <div class="share-actions">
+      <button class="btn" id="shareFile">⇩ 下载分享文件</button>
+      <span class="spacer"></span>
+      <button class="btn btn-primary" id="shareDone">完成</button>
+    </div>`;
+  $('#modalMask').hidden=false;
+  $('#shareDone').onclick=closeModal;
+  $('#shareFile').onclick=()=>{ closeModal(); exportJsonFile(); };
+
+  try{
+    const code=await packShare(sharePayload());
+    const url=location.href.split('#')[0]+'#byz='+code;
+    $('#shareUrl').value=url;
+    const tips=[];
+    if(url.length>4000) tips.push(`<span class="warn">链接较长（${url.length} 字符）</span>，部分聊天工具会截断，建议改用分享文件。`);
+    tips.push(`包含 ${sc.fighters.length} 名人物 · ${sc.squads.length} 支队伍 · ${pinN} 个标点${(state.map&&state.map.dataUrl)?'；自定义底图不在链接里，请单独发图片':''}`);
+    $('#shareHint').innerHTML=tips.join('<br>');
+  }catch(e){
+    $('#shareUrl').value='';
+    $('#shareHint').innerHTML='<span class="warn">链接生成失败</span>，请改用「下载分享文件」。';
+  }
+
+  $('#shareCopy').onclick=async()=>{
+    const el=$('#shareUrl'), v=el.value;
+    if(!v||v==='正在压缩…'){ toast('链接还没生成好','error'); return; }
+    let ok=false;
+    try{ await navigator.clipboard.writeText(v); ok=true; }catch(e){}
+    if(!ok){
+      el.focus(); el.select();
+      try{ ok=document.execCommand('copy'); }catch(e){}
+    }
+    toast(ok?'分享链接已复制':'复制失败，请手动选中复制', ok?'':'error');
   };
-  $('#btnImport').onclick=()=>$('#fileInput').click();
+}
+
+/* 收到一份分享：先看本机有没有同源方案，再决定合并还是存副本 */
+function acceptSharedPayload(payload, suffix){
+  const sc=payload.scheme||{};
+  const pinN=Object.values(sc.pins||{}).reduce((a,b)=>a+(b?b.length:0),0);
+  const same=findSameOrigin(payload);
+  const tail=`（${(sc.fighters||[]).length} 名人物 · ${pinN} 个标点）`;
+
+  if(!same){
+    confirmModal('收到分享方案',
+      `《${payload.name||'未命名方案'}》${tail}。导入后会成为你本机的一份独立副本，不影响你原有的方案。`,
+      ()=>{
+        try{ const d=importPayload(payload,suffix||'（分享）'); toast('已导入：'+d.name); }
+        catch(e){ toast('导入失败：结构不兼容','error'); }
+      });
+    return;
+  }
+  choiceModal('合并到本机，还是存副本？',
+    `本机已有同源的《${same.name}》。合并会把你这边新增的队伍 / 人物 / 标点保留，并补进对方新增的部分；两边都改过的同一个对象以本机为准。`,
+    [
+      { label:'合并', primary:true, onClick:()=>{
+          const st=mergeInto(same,payload);
+          state.currentSchemeId=same.id;
+          selected=null; pendingPlace=null;
+          selectedSquad=same.squads[0]?same.squads[0].id:null;
+          commit();
+          const added=st.squads+st.fighters+st.pins+st.schools;
+          toast(added
+            ? `已合并：新增 ${st.squads} 队 / ${st.fighters} 人 / ${st.pins} 标点${st.schools?` / ${st.schools} 个流派`:''}`
+            : '已合并：对方没有新增内容，本机版本保持不变');
+        }},
+      { label:'存为副本', onClick:()=>{
+          try{ const d=importPayload(payload,'（副本）'); toast('已存为副本：'+d.name); }
+          catch(e){ toast('导入失败：结构不兼容','error'); }
+        }},
+      { label:'取消' },
+    ]);
+}
+
+/* 多按钮弹窗 */
+function choiceModal(title,msg,actions){
+  const btns=actions.map((a,i)=>`<button class="btn ${a.primary?'btn-primary':''}" data-i="${i}">${esc(a.label)}</button>`).join('');
+  $('#modal').className='modal';
+  $('#modal').innerHTML=`<h3>${esc(title)}</h3>
+    <p style="color:var(--paper-dim);font-size:13px;line-height:1.8;text-align:left">${esc(msg)}</p>
+    <div class="modal-actions">${btns}</div>`;
+  $('#modalMask').hidden=false;
+  $('#modal').querySelectorAll('.modal-actions .btn').forEach(b=>{
+    b.onclick=()=>{
+      const a=actions[Number(b.dataset.i)];
+      closeModal();
+      if(a&&a.onClick) a.onClick();
+    };
+  });
+}
+
+/* 打开带 #byz= 的链接时自动接手 */
+async function tryImportFromShareLink(){
+  const m=/^#byz=(.+)$/.exec(location.hash||'');
+  if(!m) return;
+  const code=decodeURIComponent(m[1]);
+  try{ history.replaceState(null,'',location.pathname+location.search); }
+  catch(e){ location.hash=''; }
+  let payload;
+  try{ payload=await unpackShare(code); }
+  catch(e){ toast('分享链接已损坏或被截断','error'); return; }
+  if(!payload||payload.format!==SHARE_FORMAT||!payload.scheme){ toast('这不是一份有效的分享链接','error'); return; }
+  acceptSharedPayload(payload);
+}
+
+/* 导入入口：文件 or 链接 */
+function importMenuModal(){
+  $('#modal').className='modal';
+  $('#modal').innerHTML=`
+    <h3>导入战术方案</h3>
+    <p class="share-lead">从队友发来的文件或分享链接导入。导入后是一个独立副本，不会覆盖你现有的方案。</p>
+    <div class="import-choices">
+      <button class="import-choice" id="impFile"><b>⇩ 从文件导入</b><small>选择对方发来的 .json 文件</small></button>
+      <button class="import-choice" id="impLink"><b>↗ 从链接导入</b><small>粘贴一条 #byz= 分享链接</small></button>
+    </div>
+    <div class="modal-actions"><button class="btn" id="impCancel">取消</button></div>`;
+  $('#modalMask').hidden=false;
+  $('#impCancel').onclick=closeModal;
+  $('#impFile').onclick=()=>{ closeModal(); $('#fileInput').click(); };
+  $('#impLink').onclick=pasteLinkModal;
+}
+
+function pasteLinkModal(){
+  $('#modal').className='modal wide';
+  $('#modal').innerHTML=`
+    <h3>从链接导入</h3>
+    <p class="share-lead">把队友发来的分享链接整条粘进来即可，多余的说明文字会自动忽略。</p>
+    <div class="field">
+      <label>分享链接</label>
+      <textarea id="pasteLink" rows="4" placeholder="…/index.html#byz=1eNqr…"></textarea>
+    </div>
+    <div class="modal-actions">
+      <button class="btn" id="pasteCancel">取消</button>
+      <button class="btn btn-primary" id="pasteOk">导入</button>
+    </div>`;
+  $('#modalMask').hidden=false;
+  $('#pasteLink').focus();
+  $('#pasteCancel').onclick=closeModal;
+  $('#pasteOk').onclick=async()=>{
+    let raw=$('#pasteLink').value.trim();
+    if(!raw){ toast('先粘贴一条分享链接','error'); return; }
+    let m=/#byz=([^\s&#]+)/.exec(raw);
+    if(!m && /^[A-Za-z0-9\-_]{20,}$/.test(raw)) m=[null,raw];   // 只粘了分享码
+    if(!m){ toast('没认出链接，请确认里面带 #byz=','error'); return; }
+    let payload;
+    try{ payload=await unpackShare(decodeURIComponent(m[1])); }
+    catch(e){ toast('分享链接已损坏或被截断','error'); return; }
+    if(!payload||payload.format!==SHARE_FORMAT||!payload.scheme){ toast('这不是一份有效的分享链接','error'); return; }
+    closeModal();
+    acceptSharedPayload(payload);
+  };
+}
+
+function setupImportExport(){
+  $('#btnExport').onclick=exportJsonFile;
+  $('#btnShare').onclick=shareModal;
+  $('#btnImport').onclick=importMenuModal;
   $('#fileInput').onchange=e=>{
     const file=e.target.files[0]; if(!file) return;
     const reader=new FileReader();
     reader.onload=()=>{
       try{
         const raw=JSON.parse(reader.result);
-        // 兼容：新格式(带scheme) 与 旧格式(纯scheme)
-        const d=raw.scheme||raw;
-        if(!d.squads||!d.fighters||!d.pins) throw new Error('结构不符');
-        // 版本兼容：补齐字段（含阶段扩容，缺哪个补哪个，不覆盖已有）
-        if(!d.pins) d.pins=emptyPins();
-        STAGE_ORDER.forEach(st=>{ if(!Array.isArray(d.pins[st])) d.pins[st]=[]; });
-        d.fighters.forEach(f=>{
-          if(!f.marks) f.marks=emptyMarks();
-          STAGE_ORDER.forEach(st=>{ if(!(st in f.marks)) f.marks[st]=null; });
-        });
-        // 合并流派库：按 id 覆盖/追加，保留本地未冲突项
-        if(Array.isArray(raw.schools)&&raw.schools.length){
-          const map=new Map(state.schools.map(s=>[s.id,s]));
-          raw.schools.forEach(s=>{ if(s&&s.id) map.set(s.id,s); });
-          state.schools=Array.from(map.values());
-        }
-        if(raw.side==='red'||raw.side==='blue') state.side=raw.side;
-        if(raw.map&&raw.map.dataUrl) state.map=raw.map;
-        d.id=uid('sch'); d.name=(d.name||'导入方案')+'（导入）'; d.updatedAt=Date.now();
-        state.schemes.push(d); state.currentSchemeId=d.id; selected=null;
-        commit(); toast('导入成功：'+d.name);
+        if(!raw||typeof raw!=='object') throw new Error('结构不符');
+        acceptSharedPayload(raw,'（导入）');
       }catch(err){ toast('导入失败：文件结构不兼容','error'); }
       e.target.value='';
     };
@@ -1350,7 +1654,7 @@ function setupFullscreenTip(){
 }
 
 /* ---------- 弹窗 ---------- */
-function closeModal(){ $('#modalMask').hidden=true; }
+function closeModal(){ $('#modalMask').hidden=true; $('#modal').className='modal'; }
 function confirmModal(title,msg,onOk){
   $('#modal').innerHTML=`<h3>${title}</h3><p style="color:var(--paper-dim);font-size:13px;line-height:1.7;text-align:center">${esc(msg)}</p>
     <div class="modal-actions"><button class="btn" id="mCancel">取消</button><button class="btn btn-primary" id="mOk">确定</button></div>`;
@@ -1384,9 +1688,10 @@ function init(){
   selectedSquad=scheme().squads[0]?.id||null;   // 默认编队目标=第一队
   snapshot();
   setupMap(); setupSchools(); setupSquads(); setupTop();
-  setupMapCustom(); setupHelp(); setupFullscreenTip();
+  setupMapCustom(); setupHelp(); setupFullscreenTip(); setupLiveSync();
   initMinimap();
   applyView();
   renderAll();
+  tryImportFromShareLink();   // 链接里带 #byz= 时，问一句再导入为副本
 }
 init();

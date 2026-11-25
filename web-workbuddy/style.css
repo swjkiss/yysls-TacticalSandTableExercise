@@ -507,6 +507,42 @@ button{cursor:pointer}
 .modal .field{margin-bottom:14px}
 .modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px}
 .modal-actions .btn{min-width:88px;text-align:center}
+
+/* 分享弹窗 */
+.modal.wide{min-width:420px;max-width:660px}
+.share-lead{font-size:12px;line-height:1.75;color:var(--paper-dim);margin-bottom:16px}
+.share-lead b{color:var(--gold-bright);font-weight:500}
+.share-row{display:flex;gap:8px;align-items:stretch}
+.share-row input{
+  flex:1;min-width:0;background:var(--ink-800);border:1px solid var(--line);border-radius:3px;
+  padding:8px 10px;font-size:12px;color:var(--paper-dim);outline:none;
+  font-family:ui-monospace,Consolas,monospace;text-overflow:ellipsis;
+}
+.share-row input:focus{border-color:var(--gold-dim);color:var(--paper)}
+.share-row .btn{flex:0 0 auto;padding:6px 14px}
+.share-hint{font-size:11px;line-height:1.65;color:var(--paper-faint);margin-top:7px}
+.share-hint .warn{color:#d9a45e}
+.share-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px;align-items:center}
+.share-actions .spacer{flex:1}
+.share-actions .btn{min-width:96px;text-align:center}
+/* 本地文件打开时的提醒块 */
+.share-notice{
+  border-left:2px solid var(--cinnabar);border-radius:0 3px 3px 0;
+  background:rgba(168,59,47,.1);
+  padding:9px 12px;margin-bottom:15px;
+  font-size:11.5px;line-height:1.75;color:#dcb08a;
+}
+.share-notice b{color:#f0c79a;font-weight:500}
+/* 导入方式选择 */
+.import-choices{display:flex;flex-direction:column;gap:9px}
+.import-choice{
+  display:flex;flex-direction:column;gap:3px;text-align:left;
+  background:var(--ink-700);border:1px solid var(--line-soft);border-radius:4px;
+  padding:12px 14px;color:var(--paper);cursor:pointer;transition:.15s;
+}
+.import-choice:hover{border-color:var(--gold-dim);background:var(--ink-600)}
+.import-choice b{font-size:13px;font-weight:500;color:var(--gold-bright)}
+.import-choice small{font-size:11px;color:var(--paper-faint)}
 .squad-pick-list{display:flex;flex-direction:column;gap:7px}
 .squad-pick{
   display:flex;align-items:center;gap:9px;width:100%;
@@ -550,6 +586,12 @@ button{cursor:pointer}
 .fullscreen-tip[hidden]{display:none}
 
 /* ---------- 响应式自适应 ---------- */
+@media (max-width:1400px){
+  /* 多了一个「分享」按钮，窄一点的屏先把按钮文字和保存状态收起来，避免顶栏溢出 */
+  .topbar{gap:14px}
+  .top-actions .btn span{display:none}
+  .save-state{display:none}
+}
 @media (max-width:1200px){
   .topbar{gap:12px;padding:0 12px}
   .brand{min-width:auto}
